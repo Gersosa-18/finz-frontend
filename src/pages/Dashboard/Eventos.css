@@ -1,0 +1,81 @@
+.eventos-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  color: white;
+}
+
+.eventos-page h2 {
+  color: #7a4ec6;
+  margin-bottom: 20px;
+}
+
+.eventos-page h3 {
+  color: #b39ddb;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.evento-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #2a2e35;
+  border: 1px solid #3a3e45;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.evento-card .ticker {
+  font-weight: bold;
+  color: #7a4ec6;
+  margin-right: 15px;
+  min-width: 50px;
+}
+
+.evento-card .fecha {
+  color: #888;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.empty-state {
+  color: #888;
+  text-align: center;
+  padding: 40px;
+  background: #2a2e35;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.btn-sync {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background: #00aa76;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-sync:hover:not(:disabled) {
+  background: #009966;
+}
+
+.btn-sync:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .evento-card {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .evento-card .fecha {
+    margin-left: 0;
+  }
+}
