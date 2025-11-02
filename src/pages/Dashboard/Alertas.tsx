@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { alertasAPI } from "../../services/api";
 import CrearAlerta from "../CrearAlerta";
 import "../Dashboard.css";
+import { initNotifications, notify } from "../../utils/notifications";
 
 interface AlertasPageProps {
   onDataChange?: () => void;
@@ -13,7 +14,10 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const alertasPrevias = useRef<Set<string>>(new Set());
+
   useEffect(() => {
+    initNotifications();
     cargarAlertas();
     const int = setInterval(cargarAlertas, 30000);
     return () => clearInterval(int);
@@ -27,7 +31,17 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         alertasAPI.getActivadas(),
       ]);
       setAlertas(resAlertas.data);
-      setAlertasActivadas(resActivadas.data.alertas_activadas || []);
+
+      const nuevas = resActivadas.data.alertas_activadas || [];
+      setAlertasActivadas(nuevas);
+
+      nuevas.forEach((a: any) => {
+        if (!alertasPrevias.current.has(a.id)) {
+          notify("🔔 Alerta Finz", a.mensaje);
+          alertasPrevias.current.add(a.id);
+        }
+      });
+
       onDataChange?.();
     } catch (err) {
       console.error("Error cargando alertas:", err);

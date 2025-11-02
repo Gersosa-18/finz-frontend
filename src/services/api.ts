@@ -44,7 +44,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor Response
 // Interceptor Response - solo logout en 401
 api.interceptors.response.use(
   (response) => response,
