@@ -35,21 +35,40 @@ export interface EventosResponse {
   tus_tickers: string[];
 }
 
-// Interceptor
+// Interceptor Request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
+// Interceptor Response
+// Interceptor Response - solo logout en 401
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      authAPI.logout();
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Auth Api
 export const authAPI = {
   login: async (correo: string, contrasena: string) => {
     const res = await api.post("/login", { correo, contrasena });
     localStorage.setItem("token", res.data.access_token);
+    localStorage.setItem("refreshToken", res.data.refresh_token);
     return res.data;
   },
-  logout: () => localStorage.removeItem("token"),
+  logout: () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+  },
 };
 
 // Alertas API
