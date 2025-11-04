@@ -107,13 +107,19 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
       ) : (
         <div className="alertas-list">
           {alertas.simple.map((a: any) => (
-            <div key={a.id} className="alerta-card">
+            <div
+              key={a.id}
+              className={`alerta-card ${a.activada_at ? "activada" : ""}`}
+            >
               <div className="alerta-info">
                 <span className="ticker">{a.ticker}</span>
                 <span className="condicion">
                   Precio {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
                   {a.valor}
                 </span>
+                {a.activada_at && (
+                  <span className="badge-activada">✓ ACTIVADA</span>
+                )}
               </div>
               <button
                 className="btn-eliminar"

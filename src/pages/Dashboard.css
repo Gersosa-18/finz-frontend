@@ -94,6 +94,18 @@
   padding: 40px;
 }
 
+.alerta-card.activada {
+  background: #1a4d2e !important;
+  border-left: 4px solid #00aa76;
+}
+
+.badge-activada {
+  color: #00aa76;
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
 @media (max-width: 768px) {
   .crear-alerta-form input,
   .crear-alerta-form select {
