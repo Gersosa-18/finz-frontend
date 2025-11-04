@@ -3,7 +3,9 @@
   background: #2a2e35;
   padding: 20px;
   border-right: 1px solid #3a3e45;
-  height: calc(100vh - 70px);
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .sidebar-nav {
