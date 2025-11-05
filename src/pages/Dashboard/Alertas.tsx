@@ -19,8 +19,6 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   useEffect(() => {
     initNotifications();
     cargarAlertas();
-    const int = setInterval(cargarAlertas, 30000);
-    return () => clearInterval(int);
   }, []);
 
   const cargarAlertas = async () => {
@@ -65,6 +63,13 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
     cargarAlertas();
   };
 
+  // Agrupar alertas por ticker
+  const alertasPorTicker = alertas.simple.reduce((acc: any, a: any) => {
+    if (!acc[a.ticker]) acc[a.ticker] = [];
+    acc[a.ticker].push(a);
+    return acc;
+  }, {});
+
   return (
     <section className="alertas-page">
       <h2>Mis Alertas ({alertas.simple.length})</h2>
@@ -106,29 +111,44 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         <p className="empty-state">No tienes alertas activas</p>
       ) : (
         <div className="alertas-list">
-          {alertas.simple.map((a: any) => (
-            <div
-              key={a.id}
-              className={`alerta-card ${a.activada_at ? "activada" : ""}`}
-            >
-              <div className="alerta-info">
-                <span className="ticker">{a.ticker}</span>
-                <span className="condicion">
-                  Precio {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
-                  {a.valor}
-                </span>
-                {a.activada_at && (
-                  <span className="badge-activada">✓ ACTIVADA</span>
-                )}
+          {Object.entries(alertasPorTicker).map(
+            ([ticker, alertasList]: [string, any]) => (
+              <div key={ticker} style={{ marginBottom: "25px" }}>
+                <h3
+                  style={{
+                    color: "#7a4ec6",
+                    marginBottom: "10px",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {ticker}
+                </h3>
+                {alertasList.map((a: any) => (
+                  <div
+                    key={a.id}
+                    className={`alerta-card ${a.activada_at ? "activada" : ""}`}
+                  >
+                    <div className="alerta-info">
+                      <span className="condicion">
+                        Precio {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
+                        {a.valor}
+                      </span>
+                      {a.activada_at && (
+                        <span className="badge-activada">✓ ACTIVADA</span>
+                      )}
+                    </div>
+                    <button
+                      className="btn-eliminar"
+                      onClick={() => eliminarAlerta(a.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                ))}
               </div>
-              <button
-                className="btn-eliminar"
-                onClick={() => eliminarAlerta(a.id)}
-              >
-                Eliminar
-              </button>
-            </div>
-          ))}
+            )
+          )}
         </div>
       )}
     </section>
