@@ -15,9 +15,11 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
     valor: "",
     condicion: "mayor_que",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await alertasAPI.crearSimple({
         ticker: form.ticker.toUpperCase(),
@@ -28,20 +30,30 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
       onAlertaCreada();
     } catch (err: any) {
       alert(err.response?.data?.detail || "Error al crear alerta");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="crear-alerta-form">
       <input
-        placeholder="Ticker (ej: AAPL)"
+        placeholder="Ticker (ej: AAPL, TSLA, NVDA...)"
         value={form.ticker}
         onChange={(e) => setForm({ ...form, ticker: e.target.value })}
         required
+        minLength={1}
+        maxLength={10}
+        style={{
+          borderColor:
+            form.ticker && form.ticker.length > 10 ? "#c33" : undefined,
+        }}
+        disabled={loading}
       />
       <select
         value={form.condicion}
         onChange={(e) => setForm({ ...form, condicion: e.target.value })}
+        disabled={loading}
       >
         <option value="mayor_que">Mayor que (&gt;)</option>
         <option value="menor_que">Menor que (&lt;)</option>
@@ -53,10 +65,13 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
         value={form.valor}
         onChange={(e) => setForm({ ...form, valor: e.target.value })}
         required
+        disabled={loading}
       />
       <div className="form-actions">
-        <button type="submit">Crear</button>
-        <button type="button" onClick={onCancelar}>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creando..." : "Crear"}
+        </button>
+        <button type="button" onClick={onCancelar} disabled={loading}>
           Cancelar
         </button>
       </div>
