@@ -47,10 +47,22 @@ api.interceptors.request.use((config) => {
 // Interceptor Response - solo logout en 401
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      authAPI.logout();
-      window.location.href = "/login";
+  async (error) => {
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true;
+      const refresh = localStorage.getItem("refreshToken");
+
+      try {
+        const res = await axios.post(`${api.defaults.baseURL}/refresh`, {
+          refresh_token: refresh,
+        });
+        localStorage.setItem("token", res.data.access_token);
+        error.config.headers.Authorization = `Bearer ${res.data.access_token}`;
+        return api(error.config);
+      } catch {
+        authAPI.logout();
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
