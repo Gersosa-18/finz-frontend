@@ -9,7 +9,9 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuth(!!token);
+    const refreshToken = localStorage.getItem("refreshToken");
+    // Marcar como auth si ambos tokens existen.
+    setIsAuth(!!(token && refreshToken));
     setLoading(false);
   }, []);
 
