@@ -7,13 +7,22 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
 
+  // Verificar auth inicial
   useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = () => {
     const token = localStorage.getItem("token");
     const refreshToken = localStorage.getItem("refreshToken");
-    // Marcar como auth si ambos tokens existen.
     setIsAuth(!!(token && refreshToken));
     setLoading(false);
-  }, []);
+  };
+
+  // Función para actualizar estado de auth
+  const handleAuthChange = () => {
+    checkAuth();
+  };
 
   if (loading) return <div>Cargando ...</div>;
 
@@ -22,11 +31,23 @@ function App() {
       <Routes>
         <Route
           path="/login"
-          element={isAuth ? <Navigate to="/dashboard" /> : <Login />}
+          element={
+            isAuth ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Login onLoginSuccess={handleAuthChange} />
+            )
+          }
         />
         <Route
           path="/dashboard"
-          element={isAuth ? <MainLayout /> : <Navigate to="/login" />}
+          element={
+            isAuth ? (
+              <MainLayout onLogout={handleAuthChange} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/"

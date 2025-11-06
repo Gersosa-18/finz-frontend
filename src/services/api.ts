@@ -48,9 +48,17 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log(
+      "❌ Axios Error:",
+      error.response?.status,
+      error.response?.data
+    );
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      (error.response?.status === 401 || error.response?.status === 403) &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       const refresh = localStorage.getItem("refreshToken");
 
@@ -108,4 +116,5 @@ export const alertasAPI = {
 export const eventosAPI = {
   getMisEventos: () => api.get<EventosResponse>("/eventos/mis-eventos"),
 };
+
 export default api;

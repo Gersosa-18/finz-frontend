@@ -7,12 +7,17 @@ import Eventos from "./Dashboard/Eventos";
 import { authAPI } from "../services/api";
 import "./MainLayout.css";
 
-const MainLayout = () => {
+interface MainLayoutProps {
+  onLogout: () => void;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
   const [currentPage, setCurrentPage] = useState("alertas");
   const navigate = useNavigate();
 
   const handleLogout = () => {
     authAPI.logout();
+    onLogout();
     navigate("/login");
   };
 
