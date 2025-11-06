@@ -4,7 +4,7 @@ self.addEventListener("push", (e) => {
     self.registration.showNotification(data.title || "🔔 Finz", {
       body: data.body || "Nueva alerta",
       icon: "/logo192.png",
-      badge: "/logo192.png",
+      badge: "/badge-72x32.png",
       tag: "finz-alert",
       requireInteraction: true,
       data: { url: "/" },
