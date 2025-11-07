@@ -2,10 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import MainLayout from "./pages/MainLayout";
 import { useEffect, useState } from "react";
+import { useAuthRefresh } from "./hooks/useAuthRefresh";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+
+  useAuthRefresh();
 
   // Verificar auth inicial
   useEffect(() => {
