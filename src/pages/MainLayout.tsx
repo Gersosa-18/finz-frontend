@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import TickerTape from "../components/TickerTape";
 import Alertas from "./Dashboard/Alertas";
 import Eventos from "./Dashboard/Eventos";
 import { authAPI } from "../services/api";
@@ -24,6 +25,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
   return (
     <div className="main-layout">
       <Navbar onLogout={handleLogout} />
+      <TickerTape />
       <div className="layout-content">
         <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
         <main className="page-content">

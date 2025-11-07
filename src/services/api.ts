@@ -110,6 +110,7 @@ export const alertasAPI = {
   desactivar: (id: number) => api.put(`/alertas/${id}/desactivar`),
   eliminar: (id: number) => api.delete(`/alertas/${id}`),
   getActivadas: () => api.get<AlertasActivadasResponse>("/alertas/activadas"),
+  getTickersSeguimiento: () => api.get("/alertas/tickers-seguimiento"),
 };
 
 // Eventos API
