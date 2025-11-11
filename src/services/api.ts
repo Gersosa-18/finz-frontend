@@ -78,9 +78,12 @@ api.interceptors.response.use(
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (refreshError) {
-        authAPI.logout();
-        window.location.href = "/login";
+      } catch (refreshError: any) {
+        // Solo logout si el refresh token expiró
+        if (refreshError.response?.status === 401) {
+          authAPI.logout();
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       }
     }
