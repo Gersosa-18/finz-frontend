@@ -5,29 +5,38 @@ import "./TickerTape.css";
 const TickerTape: React.FC = () => {
   const [tickers, setTickers] = useState<any[]>([]);
   const prevData = useRef<any[]>([]);
+  const isMounted = useRef(false);
 
   useEffect(() => {
     const cargar = async () => {
       try {
         const res = await alertasAPI.getTickersSeguimiento();
         const nuevos = res.data.tickers;
-        // Actualizar si cambia
+
         if (!arraysIguales(prevData.current, nuevos)) {
           prevData.current = nuevos;
-          setTickers(nuevos);
+
+          if (isMounted.current) {
+            setTickers(nuevos);
+          } else {
+            setTickers(nuevos);
+            isMounted.current = true;
+          }
         }
       } catch (err) {}
     };
+
     cargar();
     const int = setInterval(cargar, 30000);
     return () => clearInterval(int);
   }, []);
 
-  const duplicados = [...tickers, ...tickers, ...tickers];
+  const duplicados = React.useMemo(() => [...tickers, ...tickers], [tickers]);
+
   if (!tickers.length) return null;
 
   return (
-    <div className="ticker-tapa-container">
+    <div className="ticker-tape-container">
       <div className="ticker-tape">
         {duplicados.map((t, i) => (
           <div key={`${t.symbol}-${i}`} className="ticker-item">

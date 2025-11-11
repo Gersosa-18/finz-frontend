@@ -64,11 +64,13 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   };
 
   // Agrupar alertas por ticker
-  const alertasPorTicker = alertas.simple.reduce((acc: any, a: any) => {
-    if (!acc[a.ticker]) acc[a.ticker] = [];
-    acc[a.ticker].push(a);
-    return acc;
-  }, {});
+  const alertasPorTicker = React.useMemo(() => {
+    return alertas.simple.reduce((acc: any, a: any) => {
+      if (!acc[a.ticker]) acc[a.ticker] = [];
+      acc[a.ticker].push(a);
+      return acc;
+    }, {});
+  }, [alertas.simple]);
 
   return (
     <section className="alertas-page">
