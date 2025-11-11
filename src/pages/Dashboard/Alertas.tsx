@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { alertasAPI } from "../../services/api";
 import CrearAlerta from "../CrearAlerta";
 import "../Dashboard.css";
@@ -16,12 +16,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
 
   const alertasPrevias = useRef<Set<string>>(new Set());
 
-  useEffect(() => {
-    initNotifications();
-    cargarAlertas();
-  }, []);
-
-  const cargarAlertas = async () => {
+  const cargarAlertas = useCallback(async () => {
     try {
       setLoading(true);
       const [resAlertas, resActivadas] = await Promise.all([
@@ -39,14 +34,18 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
           alertasPrevias.current.add(a.id);
         }
       });
-
       onDataChange?.();
     } catch (err) {
       console.error("Error cargando alertas:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [onDataChange]);
+
+  useEffect(() => {
+    initNotifications();
+    cargarAlertas();
+  }, [cargarAlertas]);
 
   const eliminarAlerta = async (id: number) => {
     if (!window.confirm("¿Eliminar esta alerta?")) return;
