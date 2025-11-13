@@ -1,0 +1,182 @@
+.rsi-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+}
+
+.rsi-container h2 {
+  color: #7a4ec6;
+  margin-bottom: 20px;
+}
+
+.rsi-agregar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  background: #2a2e35;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.rsi-agregar input {
+  flex: 1;
+  padding: 12px;
+  background: #14181c;
+  color: white;
+  border: 1px solid #3a3e45;
+  border-radius: 6px;
+}
+
+.rsi-agregar button {
+  padding: 12px 24px;
+  background: #00aa76;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.rsi-agregar button:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.rsi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.rsi-card {
+  background: #2a2e35;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  border: 2px solid #3a3e45;
+}
+
+.rsi-card.acercando-sv {
+  border-color: #4a8c6f;
+}
+
+.rsi-card.sobreventa {
+  border-color: #00aa76;
+}
+
+.rsi-card.sobrecompra {
+  border-color: #ff4444;
+}
+
+.rsi-card.neutral {
+  border-color: #7a4ec6;
+}
+
+.rsi-card.acercando-sc {
+  border-color: #ff7777;
+}
+
+.btn-eliminar-rsi {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  color: #888;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.btn-eliminar-rsi:hover {
+  color: #ff4444;
+}
+
+.rsi-ticker {
+  font-size: 20px;
+  font-weight: bold;
+  color: #7a4ec6;
+  margin-bottom: 15px;
+}
+
+.rsi-value {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.rsi-card.sobreventa .rsi-value {
+  color: #00aa76;
+}
+
+.rsi-card.sobrecompra .rsi-value {
+  color: #ff4444;
+}
+
+.rsi-card.neutral .rsi-value {
+  color: #7a4ec6;
+}
+
+.rsi-estado {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.rsi-info {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.rsi-bar {
+  height: 8px;
+  background: #14181c;
+  border-radius: 4px;
+  position: relative;
+  margin-top: 15px;
+}
+
+.zona-sv {
+  position: absolute;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: rgba(0, 170, 118, 0.2);
+}
+
+.zona-sc {
+  position: absolute;
+  right: 0;
+  width: 30%;
+  height: 100%;
+  background: rgba(255, 68, 68, 0.2);
+}
+
+.indicator {
+  position: absolute;
+  top: -2px;
+  width: 4px;
+  height: 12px;
+  background: white;
+  border-radius: 2px;
+  transform: translateX(-2px);
+  box-shadow: 0 0 8px currentColor;
+}
+
+.rsi-guia {
+  background: #2a2e35;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #888;
+}
+
+@media (max-width: 768px) {
+  .rsi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rsi-agregar {
+    flex-direction: column;
+  }
+}

@@ -35,6 +35,30 @@ export interface EventosResponse {
   tus_tickers: string[];
 }
 
+export interface SenalRSI {
+  ticker: string;
+  rsi: number;
+  estado: "sobreventa" | "sobrecompra" | "neutral";
+}
+
+export interface RSIResponse {
+  senales: SenalRSI[];
+}
+
+export interface RSIData {
+  ticker: string;
+  rsi_value: number | null;
+  timestamp: string | null;
+  signal: string | null;
+  proxima_actualizacion: string;
+  tiene_datos: boolean;
+}
+
+export interface MisRSIResponse {
+  total: number;
+  tickers: RSIData[];
+}
+
 // Interceptor Request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -121,4 +145,10 @@ export const eventosAPI = {
   getMisEventos: () => api.get<EventosResponse>("/eventos/mis-eventos"),
 };
 
+// Señales API
+export const rsiAPI = {
+  getMisRSI: () => api.get<MisRSIResponse>("/rsi/mis-rsi"),
+  agregar: (ticker: string) => api.post("/rsi/seguimientos", { ticker }),
+  eliminar: (ticker: string) => api.delete(`/rsi/seguimientos/${ticker}`),
+};
 export default api;

@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar";
 import TickerTape from "../components/TickerTape";
 import Alertas from "./Dashboard/Alertas";
 import Eventos from "./Dashboard/Eventos";
+import RSI from "./Dashboard/RSI";
 import { authAPI } from "../services/api";
 import "./MainLayout.css";
 
@@ -31,6 +32,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
         <main className="page-content">
           {currentPage === "alertas" && <Alertas />}
           {currentPage === "eventos" && <Eventos />}
+          {currentPage === "rsi" && <RSI />}
         </main>
       </div>
     </div>

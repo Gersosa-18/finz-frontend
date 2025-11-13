@@ -47,9 +47,8 @@ const TickerTape: React.FC = () => {
     return () => clearInterval(int);
   }, []);
 
-  // CLAVE: Multiplicar por 4 para asegurar que siempre haya contenido visible
+  // Multiplicar por 4 para asegurar que siempre haya contenido visible
   const duplicados = React.useMemo(() => {
-    // Si hay pocos items, multiplicamos más veces
     const repeticiones = tickers.length <= 3 ? 6 : 4;
     return Array(repeticiones).fill(tickers).flat();
   }, [tickers]);

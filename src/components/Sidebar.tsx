@@ -10,6 +10,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
   const pages = [
     { id: "alertas", label: "📊 Alertas" },
     { id: "eventos", label: "📅 Eventos" },
+    { id: "rsi", label: "📈 RSI" },
   ];
 
   return (

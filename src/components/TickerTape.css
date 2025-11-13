@@ -151,7 +151,7 @@
 
 @media (max-width: 480px) {
   .ticker-tape {
-    animation: scroll-infinite 15s linear infinite;
+    animation: scroll-infinite 30s linear infinite;
   }
 
   .ticker-item {
