@@ -53,11 +53,18 @@ const TickerTape: React.FC = () => {
     return Array(repeticiones).fill(tickers).flat();
   }, [tickers]);
 
+  const duracion = tickers.length * 5;
+
   if (!tickers.length) return null;
 
   return (
     <div className="ticker-tape-container">
-      <div className="ticker-tape">
+      <div
+        className="ticker-tape"
+        style={
+          { "--animation-duration": `${duracion}s` } as React.CSSProperties
+        }
+      >
         {duplicados.map((t, i) => (
           <div key={`${t.symbol}-${i}`} className="ticker-item">
             <span className="ticker-symbol">{t.symbol}</span>
