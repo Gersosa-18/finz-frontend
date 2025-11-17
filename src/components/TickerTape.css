@@ -44,47 +44,6 @@
   padding: 0 40px;
 }
 
-.ticker-symbol {
-  font-weight: bold;
-  color: #7a4ec6;
-  min-width: 50px;
-  text-align: left;
-}
-
-.ticker-price {
-  color: #fff;
-  min-width: 70px;
-  text-align: right;
-  transition: background-color 0.3s ease;
-  padding: 2px 6px;
-  border-radius: 3px;
-}
-
-.ticker-price.up {
-  background-color: rgba(0, 170, 118, 0.3);
-  animation: flash-up 1s ease;
-}
-
-.ticker-price.down {
-  background-color: rgba(255, 68, 68, 0.3);
-  animation: flash-down 1s ease;
-}
-
-.ticker-change {
-  font-weight: bold;
-  font-size: 14px;
-  min-width: 60px;
-  text-align: right;
-}
-
-.ticker-change.positive {
-  color: #00aa76;
-}
-
-.ticker-change.negative {
-  color: #ff4444;
-}
-
 /* Animaciones */
 @keyframes scroll-infinite {
   from {
@@ -95,34 +54,37 @@
   }
 }
 
-@keyframes flash-up {
-  0% {
-    background-color: transparent;
-    transform: scale(1);
-  }
-  30% {
-    background-color: rgba(0, 170, 118, 0.6);
-    transform: scale(1.05);
-  }
-  100% {
-    background-color: transparent;
-    transform: scale(1);
-  }
+.ticker-list {
+  /* position: absolute; */
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #2a2e35;
+  border-top: 1px solid #3a3e45;
+  padding: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
 }
 
-@keyframes flash-down {
-  0% {
-    background-color: transparent;
-    transform: scale(1);
-  }
-  30% {
-    background-color: rgba(255, 68, 68, 0.6);
-    transform: scale(1.05);
-  }
-  100% {
-    background-color: transparent;
-    transform: scale(1);
-  }
+.ticker-list > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #1a1e25;
+  border: 1px solid #3a3e45;
+  border-radius: 6px;
+}
+
+.ticker-list > div:hover {
+  background: #252932;
+}
+
+.ticker-list > div:last-child {
+  border-bottom: none;
 }
 
 @media (max-width: 768px) {
@@ -132,17 +94,8 @@
     min-width: 160px;
   }
 
-  .ticker-symbol {
-    font-size: 13.5px;
-    min-width: 40px;
-  }
-
-  .ticker-price {
-    min-width: 60px;
-  }
-
-  .ticker-change {
-    min-width: 50px;
+  .ticker-list {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -154,16 +107,7 @@
     min-width: 140px;
   }
 
-  .ticker-symbol {
-    font-size: 13px;
-    min-width: 35px;
-  }
-
-  .ticker-price {
-    min-width: 50px;
-  }
-
-  .ticker-change {
-    min-width: 45px;
+  .ticker-list {
+    grid-template-columns: 1fr;
   }
 }
