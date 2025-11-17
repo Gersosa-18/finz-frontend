@@ -1,46 +1,116 @@
-# Getting Started with Create React App
+# 💻 Finz - Financial Monitoring Platform (Frontend)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dashboard interactivo para monitoreo de acciones en tiempo real con alertas y análisis técnico.
 
-## Available Scripts
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-In the project directory, you can run:
+## 🚀 Características
 
-### `npm start`
+- ✅ **Dashboard interactivo** con ticker tape en tiempo real
+- ✅ **Gestión completa de alertas** (crear, ver, eliminar)
+- ✅ **Monitor de RSI** con señales visuales
+- ✅ **Calendario de eventos** económicos y earnings
+- ✅ **Notificaciones push** en navegador
+- ✅ **Autenticación segura** con refresh tokens automático
+- ✅ **Diseño responsive** (mobile-first)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠️ Stack Tecnológico
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- React 18
+- TypeScript
+- React Router DOM (navegación)
+- Axios (HTTP client)
+- Web Push API (notificaciones)
+- CSS Modules (estilos)
 
-### `npm test`
+## 📁 Arquitectura del Proyecto
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+finz-frontend/
+├── public/
+│   ├── service-worker.js    # Service Worker para push notifications
+│   └── manifest.json
+├── src/
+│   ├── components/          # Componentes reutilizables
+│   │   ├── Navbar.tsx
+│   │   ├── Sidebar.tsx
+│   │   └── TickerTape.tsx
+│   ├── pages/               # Páginas principales
+│   │   ├── Login.tsx
+│   │   ├── MainLayout.tsx
+│   │   ├── CrearAlerta.tsx
+│   │   └── Dashboard/
+│   │       ├── Alertas.tsx
+│   │       ├── Eventos.tsx
+│   │       └── RSI.tsx
+│   ├── services/
+│   │   └── api.ts          # Cliente Axios + endpoints
+│   ├── hooks/
+│   │   └── useAuthRefresh.ts
+│   ├── utils/
+│   │   └── notifications.ts
+│   └── App.tsx
+```
 
-### `npm run build`
+## 📱 Funcionalidades
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🔐 Autenticación
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Login con correo y contraseña
+- Tokens JWT (access + refresh)
+- Renovación automática de tokens cada 25 minutos
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 📊 Dashboard
 
-### `npm run eject`
+- **Ticker Tape:** Scroll infinito con precios en tiempo real
+- **Indicadores de cambio:** Colores y animaciones para subidas/bajadas
+- **Actualización automática** cada 30 segundos
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 🔔 Sistema de Alertas
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Crear alertas de precio (mayor/menor que X)
+- Ver todas las alertas agrupadas por ticker
+- Alertas activadas destacadas en verde
+- Eliminar alertas con confirmación
+- Notificaciones push cuando se activan
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 📈 Monitor de RSI
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Agregar tickers a seguimiento
+- **Visualización con colores:**
+  - 🟢 Verde: Sobreventa (RSI < 30)
+  - 🔴 Rojo: Sobrecompra (RSI > 70)
+  - 🟣 Morado: Neutral (30-70)
+- Barra de progreso visual del RSI
+- Próxima actualización visible
 
-## Learn More
+### 📅 Eventos Económicos
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Eventos macro:** FED, datos económicos USA
+- **Eventos micro:** Earnings de tus tickers
+- **Próximos 7 días** calendario
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 👤 Autor
+
+**Germán Sosa**
+
+- LinkedIn: [linkedin.com/in/germán-sosa](https://www.linkedin.com/in/germán-sosa)
+- GitHub: [@Gersosa-18](https://github.com/Gersosa-18)
+
+## 🔗 Links Relacionados
+
+- [Backend (FastAPI + PostgreSQL)](https://github.com/Gersosa-18/finz)
+- [🔗 Demo en vivo](https://finz-frontend.vercel.app)
+
+## 📸 Screenshots
+
+![Dashboard](./screenshots/dashboard.png)
+_Dashboard con ticker tape y precios en tiempo real_
+
+![Eventos](./screenshots/eventos.png)
+_Calendario de eventos económicos y earnings_
+
+![RSI](./screenshots/rsi.png)
+_Monitor de RSI con señales visuales_
