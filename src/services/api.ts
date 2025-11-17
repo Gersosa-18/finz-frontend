@@ -68,22 +68,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor Response - solo logout en 401
+// Interceptor Response
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log(
-      "❌ Axios Error:",
-      error.response?.status,
-      error.response?.data
-    );
     const originalRequest = error.config;
 
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
-      !originalRequest._retry
+      !originalRequest._isRetry
     ) {
-      originalRequest._retry = true;
+      originalRequest._isRetry = true;
       const refresh = localStorage.getItem("refreshToken");
 
       if (!refresh) {

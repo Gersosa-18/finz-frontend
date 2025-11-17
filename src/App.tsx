@@ -27,6 +27,26 @@ function App() {
     checkAuth();
   };
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const token = localStorage.getItem("token");
+        if (token) {
+          // Validar token al volver a la tab
+          fetch(`${process.env.REACT_APP_API_URL}/auth/heartbeat`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(() => {
+            console.log("Sesión expirada");
+            setIsAuth(false);
+          });
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  });
+
   if (loading) return <div>Cargando ...</div>;
 
   return (
