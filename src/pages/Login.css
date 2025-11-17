@@ -52,6 +52,43 @@
   margin-bottom: 15px;
   text-align: center;
 }
+
+/* Demo banner */
+/* Demo banner */
+.demo-banner {
+  background: transparent;
+  border: 1px dashed rgba(122, 78, 198, 0.4);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.demo-banner p {
+  margin: 0 0 12px 0;
+  color: #999;
+  font-size: 13px;
+}
+
+.demo-banner strong {
+  color: #b39ddb;
+}
+
+.btn-demo {
+  padding: 10px 20px;
+  background: transparent;
+  color: #00aa76;
+  border: 1px solid #00aa76;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-demo:hover {
+  background: #00aa76;
+  color: white;
+}
 @media (max-width: 768px) {
   .login-card {
     margin: 20px;

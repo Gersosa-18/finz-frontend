@@ -31,10 +31,29 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     }
   };
 
+  const useDemoCredentials = () => {
+    setCorreo("demo@finz.com");
+    setContrasena("demo123");
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
         <h1>Finz Login</h1>
+
+        <div className="demo-banner">
+          <p>
+            <strong>Demo: </strong>demo@finz.com / demo123
+          </p>
+          <button
+            type="button"
+            className="btn-demo"
+            onClick={useDemoCredentials}
+          >
+            Usar credenciales demo
+          </button>
+        </div>
+
         <form onSubmit={handleLogin}>
           <input
             type="email"
