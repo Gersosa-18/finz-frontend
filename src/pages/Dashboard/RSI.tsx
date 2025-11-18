@@ -5,6 +5,7 @@ const RSI = () => {
   const [tickers, setTickers] = useState<RSIData[]>([]);
   const [nuevoTicker, setNuevoTicker] = useState("");
   const [loading, setLoading] = useState(false);
+  const [orden, setOrden] = useState("AZ");
 
   useEffect(() => {
     cargar();
@@ -56,6 +57,11 @@ const RSI = () => {
     return "neutral";
   };
 
+  const lista = [...tickers].sort((a, b) =>
+    orden === "AZ"
+      ? a.ticker.localeCompare(b.ticker)
+      : (a.rsi_value ?? 999) - (b.rsi_value ?? 999)
+  );
   return (
     <section className="rsi-container">
       <h2>📈 RSI Monitor</h2>
@@ -76,9 +82,14 @@ const RSI = () => {
         <p className="empty-state">No tenés tickers monitoreados</p>
       ) : (
         <>
+          <select value={orden} onChange={(e) => setOrden(e.target.value)}>
+            <option value="AZ">A → Z</option>
+            <option value="RSI">RSI</option>
+          </select>
           <div className="rsi-grid">
-            {tickers.map((t) => {
+            {lista.map((t) => {
               const estado = getEstado(t.signal);
+
               return (
                 <div key={t.ticker} className={`rsi-card ${estado}`}>
                   <button
