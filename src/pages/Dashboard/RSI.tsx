@@ -82,10 +82,15 @@ const RSI = () => {
         <p className="empty-state">No tenés tickers monitoreados</p>
       ) : (
         <>
-          <select value={orden} onChange={(e) => setOrden(e.target.value)}>
+          <select
+            className="rsi-orden"
+            value={orden}
+            onChange={(e) => setOrden(e.target.value)}
+          >
             <option value="AZ">A → Z</option>
             <option value="RSI">RSI</option>
           </select>
+
           <div className="rsi-grid">
             {lista.map((t) => {
               const estado = getEstado(t.signal);
