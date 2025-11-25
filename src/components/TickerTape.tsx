@@ -5,7 +5,6 @@ import "./TickerTape.css";
 
 const TickerTape: React.FC = () => {
   const [tickers, setTickers] = useState<any[]>([]);
-  const [menu, setMenu] = useState(false);
   const [priceChanges, setPriceChanges] = useState<
     Record<string, "up" | "down" | null>
   >({});
@@ -66,7 +65,6 @@ const TickerTape: React.FC = () => {
         style={
           { "--animation-duration": `${duracion}s` } as React.CSSProperties
         }
-        onDoubleClick={() => setMenu(!menu)}
       >
         {duplicados.map((t, i) => (
           <div key={`${t.symbol}-${i}`} className="ticker-item">
@@ -74,17 +72,6 @@ const TickerTape: React.FC = () => {
           </div>
         ))}
       </div>
-      {menu && (
-        <div className="ticker-list">
-          {[...tickers]
-            .sort((a, b) => b.change - a.change)
-            .map((t) => (
-              <div key={t.symbol}>
-                <TickerItem ticker={t} />
-              </div>
-            ))}
-        </div>
-      )}
     </div>
   );
 };

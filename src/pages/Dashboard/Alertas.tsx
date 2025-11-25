@@ -3,6 +3,7 @@ import { alertasAPI } from "../../services/api";
 import CrearAlerta from "../CrearAlerta";
 import "../Dashboard.css";
 import { initNotifications, notify } from "../../utils/notifications";
+import { TickerItem } from "../../components/TickerItem";
 
 interface AlertasPageProps {
   onDataChange?: () => void;
@@ -13,17 +14,25 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   const [alertasActivadas, setAlertasActivadas] = useState<any[]>([]);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tickerData, setTickerData] = useState<Record<string, any>>({});
 
   const alertasPrevias = useRef<Set<string>>(new Set());
 
   const cargarAlertas = useCallback(async () => {
     try {
       setLoading(true);
-      const [resAlertas, resActivadas] = await Promise.all([
+      const [resAlertas, resActivadas, resTickets] = await Promise.all([
         alertasAPI.getMisAlertas(),
         alertasAPI.getActivadas(),
+        alertasAPI.getTickersSeguimiento(),
       ]);
       setAlertas(resAlertas.data);
+
+      const tickerMap: Record<string, any> = {};
+      resTickets.data.tickers.forEach((t: any) => {
+        tickerMap[t.symbol] = { price: t.price, change: t.change };
+      });
+      setTickerData(tickerMap);
 
       const nuevas = resActivadas.data.alertas_activadas || [];
       setAlertasActivadas(nuevas);
@@ -115,16 +124,27 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
           {Object.entries(alertasPorTicker).map(
             ([ticker, alertasList]: [string, any]) => (
               <div key={ticker} style={{ marginBottom: "25px" }}>
-                <h3
+                <div
                   style={{
-                    color: "#7a4ec6",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                     marginBottom: "10px",
-                    fontSize: "18px",
-                    fontWeight: "bold",
                   }}
                 >
-                  {ticker}
-                </h3>
+                  <h3 style={{ color: "#7a4ec6", margin: 0 }}>{ticker}</h3>
+                  {tickerData[ticker] && (
+                    <div style={{ display: "flex", gap: "15px" }}>
+                      <TickerItem
+                        ticker={{
+                          symbol: ticker,
+                          price: tickerData[ticker].price,
+                          change: tickerData[ticker].change,
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
                 {alertasList.map((a: any) => (
                   <div
                     key={a.id}
