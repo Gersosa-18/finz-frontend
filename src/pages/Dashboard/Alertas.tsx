@@ -132,7 +132,6 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                     marginBottom: "10px",
                   }}
                 >
-                  <h3 style={{ color: "#7a4ec6", margin: 0 }}>{ticker}</h3>
                   {tickerData[ticker] && (
                     <div style={{ display: "flex", gap: "15px" }}>
                       <TickerItem
