@@ -1,7 +1,11 @@
 import axios from "axios";
 
+const API_URL = (
+  process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
+).replace(/\/$/, "");
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://127.0.0.1:8000",
+  baseURL: API_URL,
 });
 
 // Tipos
@@ -88,7 +92,7 @@ api.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post(`${api.defaults.baseURL}/refresh`, {
+        const res = await api.post("/refresh", {
           refresh_token: refresh,
         });
 
@@ -98,7 +102,6 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
       } catch (refreshError: any) {
-        // Solo logout si el refresh token expiró
         if (refreshError.response?.status === 401) {
           authAPI.logout();
           window.location.href = "/login";
@@ -111,7 +114,7 @@ api.interceptors.response.use(
   }
 );
 
-// Auth Api
+// Auth Api - usa baseURL automáticamente
 export const authAPI = {
   login: async (correo: string, contrasena: string) => {
     const res = await api.post("/login", { correo, contrasena });
