@@ -92,7 +92,7 @@ api.interceptors.response.use(
       }
 
       try {
-        const res = await api.post("/refresh", {
+        const res = await api.post("/auth/refresh", {
           refresh_token: refresh,
         });
 

@@ -15,6 +15,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tickerData, setTickerData] = useState<Record<string, any>>({});
+  const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
 
   const alertasPrevias = useRef<Set<string>>(new Set());
 
@@ -80,6 +81,10 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
     }, {});
   }, [alertas.simple]);
 
+  const tickersOrdenados = React.useMemo(() => {
+    return Object.keys(alertasPorTicker).sort();
+  }, [alertasPorTicker]);
+
   return (
     <section className="alertas-page">
       <h2>Mis Alertas ({alertas.simple.length})</h2>
@@ -120,55 +125,63 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
       {alertas.simple.length === 0 ? (
         <p className="empty-state">No tienes alertas activas</p>
       ) : (
-        <div className="alertas-list">
-          {Object.entries(alertasPorTicker).map(
-            ([ticker, alertasList]: [string, any]) => (
-              <div key={ticker} style={{ marginBottom: "25px" }}>
+        <div className="bento-grid">
+          {tickersOrdenados.map((ticker) => {
+            const alertasList = alertasPorTicker[ticker];
+            const tieneActivadas = alertasList.some((a: any) => a.activada_at);
+            return (
+              <div
+                key={ticker}
+                className={`bento-card ${
+                  hoveredTicker === ticker ? "expanded" : ""
+                } ${tieneActivadas ? "has-activadas" : ""}`}
+                onMouseEnter={() => setHoveredTicker(ticker)}
+                onMouseLeave={() => setHoveredTicker(null)}
+              >
+                <div className="bento-header">
+                  {tickerData[ticker] && (
+                    <TickerItem
+                      ticker={{
+                        symbol: ticker,
+                        price: tickerData[ticker].price,
+                        change: tickerData[ticker].change,
+                      }}
+                    />
+                  )}
+                  <span className="alert-badge">{alertasList.length}</span>
+                </div>
                 <div
+                  className="bento-content"
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "10px",
+                    display: hoveredTicker === ticker ? "flex" : "none",
                   }}
                 >
-                  {tickerData[ticker] && (
-                    <div style={{ display: "flex", gap: "15px" }}>
-                      <TickerItem
-                        ticker={{
-                          symbol: ticker,
-                          price: tickerData[ticker].price,
-                          change: tickerData[ticker].change,
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-                {alertasList.map((a: any) => (
-                  <div
-                    key={a.id}
-                    className={`alerta-card ${a.activada_at ? "activada" : ""}`}
-                  >
-                    <div className="alerta-info">
+                  {alertasList.map((a: any) => (
+                    <div
+                      key={a.id}
+                      className={`mini-alert ${
+                        a.activada_at ? "activada" : ""
+                      }`}
+                    >
                       <span className="condicion">
-                        Precio {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
+                        {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
                         {a.valor}
                       </span>
                       {a.activada_at && (
-                        <span className="badge-activada">✓ ACTIVADA</span>
+                        <span className="badge-activada">✓</span>
                       )}
+                      <button
+                        className="btn-eliminar-mini"
+                        onClick={() => eliminarAlerta(a.id)}
+                      >
+                        ✕
+                      </button>
                     </div>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => eliminarAlerta(a.id)}
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            )
-          )}
+            );
+          })}
         </div>
       )}
     </section>
