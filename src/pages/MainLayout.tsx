@@ -6,6 +6,7 @@ import TickerTape from "../components/TickerTape";
 import Alertas from "./Dashboard/Alertas";
 import Eventos from "./Dashboard/Eventos";
 import RSI from "./Dashboard/RSI";
+import WeeklyReport from "./Dashboard/WeeklyReport";
 import { authAPI } from "../services/api";
 import "./MainLayout.css";
 
@@ -33,6 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
           {currentPage === "alertas" && <Alertas />}
           {currentPage === "eventos" && <Eventos />}
           {currentPage === "rsi" && <RSI />}
+          {currentPage === "weekly-report" && <WeeklyReport />}
         </main>
       </div>
     </div>

@@ -11,6 +11,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
     { id: "alertas", label: "📊 Alertas" },
     { id: "eventos", label: "📅 Eventos" },
     { id: "rsi", label: "📈 RSI" },
+    { id: "weekly-report", label: "📈 Reporte Semanal" },
   ];
 
   return (

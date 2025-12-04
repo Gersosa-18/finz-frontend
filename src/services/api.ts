@@ -63,6 +63,26 @@ export interface MisRSIResponse {
   tickers: RSIData[];
 }
 
+export interface ReporteResponse {
+  id: number;
+  resumen_groq: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  indices_json: Array<{
+    ticker: string;
+    cambio_porcentual: number;
+    precio_actual: number;
+    precio_apertura: number;
+  }>;
+  sectores_json: Array<{
+    ticker: string;
+    cambio_porcentual: number;
+    precio_actual: number;
+    precio_apertura: number;
+  }>;
+  created_at: string;
+}
+
 // Interceptor Request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -150,3 +170,9 @@ export const rsiAPI = {
   eliminar: (ticker: string) => api.delete(`/rsi/seguimientos/${ticker}`),
 };
 export default api;
+
+// Reportes API
+export const reporteAPI = {
+  getSemanalActual: () =>
+    api.get<ReporteResponse[]>("/reportes/semanal-actual"),
+};
