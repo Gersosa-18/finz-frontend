@@ -3,14 +3,15 @@ import { reporteAPI, ReporteResponse } from "../../services/api";
 import "./WeeklyReport.css";
 
 const WeeklyReport = () => {
-  const [reporte, setReporte] = useState<ReporteResponse | null>(null);
+  const [reportes, setReportes] = useState<ReporteResponse[]>([]);
+  const [indiceActual, setIndiceActual] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const cargar = async () => {
     try {
       setLoading(true);
       const res = await reporteAPI.getSemanalActual();
-      setReporte(res.data[0]);
+      setReportes(res.data);
     } catch (err) {
       console.error("Error cargando reporte:", err);
     } finally {
@@ -28,12 +29,13 @@ const WeeklyReport = () => {
         <p>Cargando reporte...</p>
       </div>
     );
-  if (!reporte)
+  if (reportes.length === 0)
     return (
       <div className="weekly-report-empty">
         <p>📊 No hay reportes</p>
       </div>
     );
+  const reporte = reportes[indiceActual];
 
   // Helper para formateo de fechas
   const formatFecha = (fecha: string) => {
@@ -48,9 +50,24 @@ const WeeklyReport = () => {
       {/* Header */}
       <div className="report-header">
         <h2>📈 Reporte Semanal</h2>
-        <span className="report-period">
-          {formatFecha(reporte.fecha_inicio)} - {formatFecha(reporte.fecha_fin)}
-        </span>
+        <div>
+          <button
+            onClick={() => setIndiceActual((i) => i + 1)}
+            disabled={indiceActual >= reportes.length - 1}
+          >
+            ← Ant
+          </button>
+          <span className="report-period">
+            {formatFecha(reporte.fecha_inicio)} -{" "}
+            {formatFecha(reporte.fecha_fin)}
+          </span>
+          <button
+            onClick={() => setIndiceActual((i) => i - 1)}
+            disabled={indiceActual === 0}
+          >
+            Sig →
+          </button>
+        </div>
       </div>
 
       {/* TODO: Mostrar contenido */}
