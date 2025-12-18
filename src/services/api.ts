@@ -1,4 +1,8 @@
 import axios from "axios";
+import { AlertasActivadasResponse, AlertasResponse } from "../types/alertas";
+import { EventosResponse } from "../types/eventos";
+import { MisRSIResponse } from "../types/rsi";
+import { ReporteResponse } from "../types/reportes";
 
 const API_URL = (
   process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
@@ -7,81 +11,6 @@ const API_URL = (
 const api = axios.create({
   baseURL: API_URL,
 });
-
-// Tipos
-export interface AlertaSimple {
-  id: number;
-  ticker: string;
-  campo: "precio" | "volumen";
-  tipo_condicion: "mayor_que" | "menor_que";
-  valor: number;
-  activo: boolean;
-  user_id: number;
-  created_at: string;
-}
-
-export interface AlertasResponse {
-  simple: AlertaSimple[];
-  rango: any[];
-  porcentaje: any[];
-  compuesta: any[];
-}
-
-export interface AlertasActivadasResponse {
-  alertas_evaluadas: number;
-  alertas_activadas: Array<{ id: string; mensaje: string }>;
-  total_activadas: number;
-}
-
-export interface EventosResponse {
-  macro: Array<{ descripcion: string; fecha: string }>;
-  micro: Array<{ ticker: string; descripcion: string; fecha: string }>;
-  tus_tickers: string[];
-}
-
-export interface SenalRSI {
-  ticker: string;
-  rsi: number;
-  estado: "sobreventa" | "sobrecompra" | "neutral";
-}
-
-export interface RSIResponse {
-  senales: SenalRSI[];
-}
-
-export interface RSIData {
-  ticker: string;
-  rsi_value: number | null;
-  timestamp: string | null;
-  signal: string | null;
-  proxima_actualizacion: string;
-  tiene_datos: boolean;
-}
-
-export interface MisRSIResponse {
-  total: number;
-  tickers: RSIData[];
-}
-
-export interface ReporteResponse {
-  id: number;
-  resumen_groq: string;
-  fecha_inicio: string;
-  fecha_fin: string;
-  indices_json: Array<{
-    ticker: string;
-    cambio_porcentual: number;
-    precio_actual: number;
-    precio_apertura: number;
-  }>;
-  sectores_json: Array<{
-    ticker: string;
-    cambio_porcentual: number;
-    precio_actual: number;
-    precio_apertura: number;
-  }>;
-  created_at: string;
-}
 
 // Interceptor Request
 api.interceptors.request.use((config) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { reporteAPI, ReporteResponse } from "../../services/api";
+import { reporteAPI } from "../../services/api";
 import "./WeeklyReport.css";
+import { ReporteResponse } from "../../types/reportes";
 
 const WeeklyReport = () => {
   const [reportes, setReportes] = useState<ReporteResponse[]>([]);

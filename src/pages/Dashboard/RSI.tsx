@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { rsiAPI, RSIData } from "../../services/api";
+import { rsiAPI } from "../../services/api";
 import "./RSI.css";
+import { RSIData } from "../../types/rsi";
 const RSI = () => {
   const [tickers, setTickers] = useState<RSIData[]>([]);
   const [nuevoTicker, setNuevoTicker] = useState("");
