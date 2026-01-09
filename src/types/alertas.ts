@@ -6,13 +6,26 @@ export interface AlertaSimple {
   tipo_condicion: "mayor_que" | "menor_que";
   valor: number;
   activo: boolean;
+  activada_at: string | null;
+  user_id: number;
+  created_at: string;
+}
+
+export interface AlertaRango {
+  id: number;
+  ticker: string;
+  campo: "precio" | "volumen";
+  valor_minimo: number;
+  valor_maximo: number;
+  activo: boolean;
+  activada_at: string | null;
   user_id: number;
   created_at: string;
 }
 
 export interface AlertasResponse {
   simple: AlertaSimple[];
-  //   rango: any[];
+  rango: AlertaRango[];
   //   porcentaje: any[];
   //   compuesta: any[];
 }

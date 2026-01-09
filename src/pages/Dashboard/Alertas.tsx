@@ -10,7 +10,7 @@ interface AlertasPageProps {
 }
 
 const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
-  const [alertas, setAlertas] = useState<any>({ simple: [] });
+  const [alertas, setAlertas] = useState<any>({ simple: [], rango: [] });
   const [alertasActivadas, setAlertasActivadas] = useState<any[]>([]);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,12 +74,22 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
 
   // Agrupar alertas por ticker
   const alertasPorTicker = React.useMemo(() => {
-    return alertas.simple.reduce((acc: any, a: any) => {
+    const acc: any = {};
+
+    // agrugar alertas simples
+    alertas.simple.forEach((a: any) => {
       if (!acc[a.ticker]) acc[a.ticker] = [];
-      acc[a.ticker].push(a);
-      return acc;
-    }, {});
-  }, [alertas.simple]);
+      acc[a.ticker].push({ ...a, tipo: "simple" });
+    });
+
+    // agrupar alertas de rango
+    alertas.rango.forEach((a: any) => {
+      if (!acc[a.ticker]) acc[a.ticker] = [];
+      acc[a.ticker].push({ ...a, tipo: "rango" });
+    });
+
+    return acc;
+  }, [alertas.simple, alertas.rango]);
 
   const tickersOrdenados = React.useMemo(() => {
     return Object.keys(alertasPorTicker).sort();
@@ -87,7 +97,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
 
   return (
     <section className="alertas-page">
-      <h2>Mis Alertas ({alertas.simple.length})</h2>
+      <h2>Mis Alertas ({alertas.simple.length + alertas.rango.length})</h2>
 
       {alertasActivadas.length > 0 && (
         <div
@@ -122,7 +132,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         />
       )}
 
-      {alertas.simple.length === 0 ? (
+      {alertas.simple.length === 0 && alertas.rango.length === 0 ? (
         <p className="empty-state">No tienes alertas activas</p>
       ) : (
         <div className="bento-grid">
@@ -164,8 +174,11 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                       }`}
                     >
                       <span className="condicion">
-                        {a.tipo_condicion === "mayor_que" ? ">" : "<"} $
-                        {a.valor}
+                        {a.tipo === "simple"
+                          ? `${a.tipo_condicion === "mayor_que" ? ">" : "<"} $${
+                              a.valor
+                            }`
+                          : `$${a.valor_minimo} - $${a.valor_maximo}`}
                       </span>
                       {a.activada_at && (
                         <span className="badge-activada">✓</span>
