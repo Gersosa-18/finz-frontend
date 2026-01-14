@@ -82,6 +82,7 @@ export const alertasAPI = {
   getMisAlertas: () => api.get<AlertasResponse>("/alertas/mis-alertas"),
   crearSimple: (data: any) => api.post("/alertas/simple", data),
   crearRango: (data: any) => api.post("/alertas/rango", data),
+  crearPorcentaje: (data: any) => api.post("/alertas/porcentaje", data),
   desactivar: (id: number) => api.put(`/alertas/${id}/desactivar`),
   eliminar: (id: number) => api.delete(`/alertas/${id}`),
   getActivadas: () => api.get<AlertasActivadasResponse>("/alertas/activadas"),

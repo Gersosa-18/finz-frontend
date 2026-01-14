@@ -18,6 +18,8 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
     // rango
     valor_minimo: "",
     valor_maximo: "",
+    // porcentaje
+    porcentaje_cambio: "",
   });
   const [tipoAlerta, setTipoAlerta] = useState("simple");
   const [loading, setLoading] = useState(false);
@@ -39,13 +41,26 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
       } finally {
         setLoading(false);
       }
-    } else {
+    } else if (tipoAlerta === "rango") {
       try {
         await alertasAPI.crearRango({
           ticker: form.ticker.toUpperCase(),
           campo: "precio",
           valor_minimo: parseFloat(form.valor_minimo),
           valor_maximo: parseFloat(form.valor_maximo),
+        });
+        onAlertaCreada();
+      } catch (err: any) {
+        alert(err.response?.data?.detail || "Error al crear alerta");
+      } finally {
+        setLoading(false);
+      }
+    } else if (tipoAlerta === "porcentaje") {
+      try {
+        await alertasAPI.crearPorcentaje({
+          ticker: form.ticker.toUpperCase(),
+          campo: "precio",
+          porcentaje_cambio: parseFloat(form.porcentaje_cambio),
         });
         onAlertaCreada();
       } catch (err: any) {
@@ -67,6 +82,7 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
       >
         <option value="simple">Simple</option>
         <option value="rango">Rango</option>
+        <option value="porcentaje">Porcentaje</option>
       </select>
       <input
         placeholder="Ticker (ej: AAPL, TSLA, NVDA...)"
@@ -121,6 +137,19 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
           step="0.01"
           value={form.valor_maximo}
           onChange={(e) => setForm({ ...form, valor_maximo: e.target.value })}
+          required
+          disabled={loading}
+        />
+      )}
+      {tipoAlerta === "porcentaje" && (
+        <input
+          placeholder="Porcentaje de cambio (ej: 5 para ±5%)"
+          type="number"
+          step="0.01"
+          value={form.porcentaje_cambio}
+          onChange={(e) =>
+            setForm({ ...form, porcentaje_cambio: e.target.value })
+          }
           required
           disabled={loading}
         />

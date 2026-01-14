@@ -23,10 +23,22 @@ export interface AlertaRango {
   created_at: string;
 }
 
+export interface AlertaPorcentaje {
+  id: number;
+  ticker: string;
+  campo: "precio" | "volumen";
+  porcentaje_cambio: number;
+  precio_referencia: number;
+  activo: boolean;
+  activada_at: string | null;
+  user_id: number;
+  created_at: string;
+}
+
 export interface AlertasResponse {
   simple: AlertaSimple[];
   rango: AlertaRango[];
-  //   porcentaje: any[];
+  porcentaje: AlertaPorcentaje[];
   //   compuesta: any[];
 }
 

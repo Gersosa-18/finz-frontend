@@ -10,7 +10,11 @@ interface AlertasPageProps {
 }
 
 const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
-  const [alertas, setAlertas] = useState<any>({ simple: [], rango: [] });
+  const [alertas, setAlertas] = useState<any>({
+    simple: [],
+    rango: [],
+    porcentaje: [],
+  });
   const [alertasActivadas, setAlertasActivadas] = useState<any[]>([]);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -88,16 +92,27 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
       acc[a.ticker].push({ ...a, tipo: "rango" });
     });
 
-    return acc;
-  }, [alertas.simple, alertas.rango]);
+    // agrupar alertas de porcentaje
+    alertas.porcentaje.forEach((a: any) => {
+      if (!acc[a.ticker]) acc[a.ticker] = [];
+      acc[a.ticker].push({ ...a, tipo: "porcentaje" });
+    });
 
+    return acc;
+  }, [alertas.simple, alertas.rango, alertas.porcentaje]);
   const tickersOrdenados = React.useMemo(() => {
     return Object.keys(alertasPorTicker).sort();
   }, [alertasPorTicker]);
 
   return (
     <section className="alertas-page">
-      <h2>Mis Alertas ({alertas.simple.length + alertas.rango.length})</h2>
+      <h2>
+        Mis Alertas (
+        {alertas.simple.length +
+          alertas.rango.length +
+          alertas.porcentaje.length}
+        )
+      </h2>
 
       {alertasActivadas.length > 0 && (
         <div
@@ -132,7 +147,9 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         />
       )}
 
-      {alertas.simple.length === 0 && alertas.rango.length === 0 ? (
+      {alertas.simple.length === 0 &&
+      alertas.rango.length === 0 &&
+      alertas.porcentaje.length === 0 ? (
         <p className="empty-state">No tienes alertas activas</p>
       ) : (
         <div className="bento-grid">
@@ -174,12 +191,23 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                       }`}
                     >
                       <span className="condicion">
-                        {a.tipo === "simple"
-                          ? `${a.tipo_condicion === "mayor_que" ? ">" : "<"} $${
-                              a.valor
-                            }`
-                          : `$${a.valor_minimo} - $${a.valor_maximo}`}
+                        {a.tipo === "simple" &&
+                          `${a.tipo_condicion === "mayor_que" ? ">" : "<"} $${
+                            a.valor
+                          }`}
+
+                        {a.tipo === "rango" &&
+                          `$${a.valor_minimo} - $${a.valor_maximo}`}
+
+                        {a.tipo === "porcentaje" &&
+                          (() => {
+                            const simb = Number(a.porcentaje_cambio);
+                            return `${simb >= 0 ? "↑ " : "↓ "}${Math.abs(
+                              simb
+                            )}%`;
+                          })()}
                       </span>
+
                       {a.activada_at && (
                         <span className="badge-activada">✓</span>
                       )}
