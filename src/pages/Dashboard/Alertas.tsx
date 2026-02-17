@@ -59,12 +59,14 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   useEffect(() => {
     initNotifications();
     cargarAlertas();
+    const int = setInterval(cargarAlertas, 30000);
+    return () => clearInterval(int);
   }, [cargarAlertas]);
 
-  const eliminarAlerta = async (id: number) => {
+  const eliminarAlerta = async (id: number, tipo: string) => {
     if (!window.confirm("¿Eliminar esta alerta?")) return;
     try {
-      await alertasAPI.eliminar(id);
+      await alertasAPI.eliminar(id, tipo);
       cargarAlertas();
     } catch (err) {
       alert("Error al eliminar");
@@ -203,7 +205,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                           (() => {
                             const simb = Number(a.porcentaje_cambio);
                             return `${simb >= 0 ? "↑ " : "↓ "}${Math.abs(
-                              simb
+                              simb,
                             )}%`;
                           })()}
                       </span>
@@ -213,7 +215,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                       )}
                       <button
                         className="btn-eliminar-mini"
-                        onClick={() => eliminarAlerta(a.id)}
+                        onClick={() => eliminarAlerta(a.id, a.tipo)}
                       >
                         ✕
                       </button>
