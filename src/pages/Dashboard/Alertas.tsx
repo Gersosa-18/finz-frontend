@@ -169,15 +169,13 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                 onMouseLeave={() => setHoveredTicker(null)}
               >
                 <div className="bento-header">
-                  {tickerData[ticker] && (
-                    <TickerItem
-                      ticker={{
-                        symbol: ticker,
-                        price: tickerData[ticker]?.price ?? "...",
-                        change: tickerData[ticker]?.change ?? 0,
-                      }}
-                    />
-                  )}
+                  <TickerItem
+                    ticker={{
+                      symbol: ticker,
+                      price: tickerData[ticker]?.price ?? "...",
+                      change: tickerData[ticker]?.change ?? 0,
+                    }}
+                  />
                   <span className="alert-badge">{alertasList.length}</span>
                 </div>
                 <div
