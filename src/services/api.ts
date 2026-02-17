@@ -4,20 +4,6 @@ import { EventosResponse } from "../types/eventos";
 import { MisRSIResponse } from "../types/rsi";
 import { ReporteResponse } from "../types/reportes";
 
-import supabase from "./supabase";
-
-// Helper para extraer user_id del JWT
-const getUserIdFromToken = () => {
-  try {
-    return (
-      JSON.parse(atob(localStorage.getItem("token")?.split(".")[1] || ""))
-        .user_id || 0
-    );
-  } catch {
-    return 0;
-  }
-};
-
 const API_URL = (
   process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
 ).replace(/\/$/, "");
@@ -62,6 +48,7 @@ api.interceptors.response.use(
         const newToken = res.data.access_token;
         localStorage.setItem("token", newToken);
 
+        api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
       } catch (refreshError: any) {
@@ -93,38 +80,12 @@ export const authAPI = {
 
 // Alertas API
 export const alertasAPI = {
-  getMisAlertas: async () => {
-    const userId = getUserIdFromToken();
-
-    const [simple, rango, porcentaje] = await Promise.all([
-      supabase.from("alertas_simple").select("*").eq("user_id", userId),
-      supabase.from("alertas_rango").select("*").eq("user_id", userId),
-      supabase.from("alertas_porcentaje").select("*").eq("user_id", userId),
-    ]);
-
-    return {
-      data: {
-        simple: simple.data || [],
-        rango: rango.data || [],
-        porcentaje: porcentaje.data || [],
-      },
-    };
-  },
+  getMisAlertas: () => api.get("/alertas/mis-alertas"),
   crearSimple: (data: any) => api.post("/alertas/simple", data),
   crearRango: (data: any) => api.post("/alertas/rango", data),
   crearPorcentaje: (data: any) => api.post("/alertas/porcentaje", data),
   desactivar: (id: number) => api.put(`/alertas/${id}/desactivar`),
-  eliminar: async (id: number, tipo: string) => {
-    const tabla =
-      tipo === "simple"
-        ? "alertas_simple"
-        : tipo === "rango"
-          ? "alertas_rango"
-          : "alertas_porcentaje";
-    const { error } = await supabase.from(tabla).delete().eq("id", id);
-    if (error) throw error;
-    return { data: { message: "Eliminada" } };
-  },
+  eliminar: (id: number) => api.delete(`/alertas/${id}`),
   getActivadas: () => api.get<AlertasActivadasResponse>("/alertas/activadas"),
   getTickersSeguimiento: () => api.get("/alertas/tickers-seguimiento"),
 };

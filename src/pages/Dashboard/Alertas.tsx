@@ -38,6 +38,8 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         tickerMap[t.symbol] = { price: t.price, change: t.change };
       });
       setTickerData(tickerMap);
+      console.log("📊 tickerMap:", tickerMap);
+      // console.log("📊 tickers en alertas:", Object.keys(alertasPorTicker));
       setLoading(false); // UI sin esperar las getActivadas
 
       // Evaluar en segundo plano
