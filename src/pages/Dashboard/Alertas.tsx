@@ -26,9 +26,9 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   const cargarAlertas = useCallback(async () => {
     try {
       setLoading(true);
-      const [resAlertas, resActivadas, resTickets] = await Promise.all([
+      // Carga rápida
+      const [resAlertas, resTickets] = await Promise.all([
         alertasAPI.getMisAlertas(),
-        alertasAPI.getActivadas(),
         alertasAPI.getTickersSeguimiento(),
       ]);
       setAlertas(resAlertas.data);
@@ -38,10 +38,12 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         tickerMap[t.symbol] = { price: t.price, change: t.change };
       });
       setTickerData(tickerMap);
+      setLoading(false); // UI sin esperar las getActivadas
 
+      // Evaluar en segundo plano
+      const resActivadas = await alertasAPI.getActivadas();
       const nuevas = resActivadas.data.alertas_activadas || [];
       setAlertasActivadas(nuevas);
-
       nuevas.forEach((a: any) => {
         if (!alertasPrevias.current.has(a.id)) {
           notify("🔔 Alerta Finz", a.mensaje);
@@ -51,7 +53,6 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
       onDataChange?.();
     } catch (err) {
       console.error("Error cargando alertas:", err);
-    } finally {
       setLoading(false);
     }
   }, [onDataChange]);
