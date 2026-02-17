@@ -173,8 +173,8 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                     <TickerItem
                       ticker={{
                         symbol: ticker,
-                        price: tickerData[ticker].price,
-                        change: tickerData[ticker].change,
+                        price: tickerData[ticker]?.price ?? "...",
+                        change: tickerData[ticker]?.change ?? 0,
                       }}
                     />
                   )}
