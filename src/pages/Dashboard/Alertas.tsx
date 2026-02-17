@@ -66,10 +66,10 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
     return () => clearInterval(int);
   }, [cargarAlertas]);
 
-  const eliminarAlerta = async (id: number, tipo: string) => {
+  const eliminarAlerta = async (id: number) => {
     if (!window.confirm("¿Eliminar esta alerta?")) return;
     try {
-      await alertasAPI.eliminar(id, tipo);
+      await alertasAPI.eliminar(id);
       cargarAlertas();
     } catch (err) {
       alert("Error al eliminar");
@@ -216,7 +216,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
                       )}
                       <button
                         className="btn-eliminar-mini"
-                        onClick={() => eliminarAlerta(a.id, a.tipo)}
+                        onClick={() => eliminarAlerta(a.id)}
                       >
                         ✕
                       </button>
