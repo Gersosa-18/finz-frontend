@@ -7,6 +7,7 @@ import Alertas from "./Dashboard/Alertas";
 import Eventos from "./Dashboard/Eventos";
 import RSI from "./Dashboard/RSI";
 import WeeklyReport from "./Dashboard/WeeklyReport";
+import Mag7 from "./Dashboard/Mag7";
 import { authAPI } from "../services/api";
 import "./MainLayout.css";
 
@@ -35,6 +36,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
           {currentPage === "eventos" && <Eventos />}
           {currentPage === "rsi" && <RSI />}
           {currentPage === "weekly-report" && <WeeklyReport />}
+          {currentPage === "mag7" && <Mag7 />}
         </main>
       </div>
     </div>

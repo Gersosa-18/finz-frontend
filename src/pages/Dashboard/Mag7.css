@@ -1,0 +1,88 @@
+.mag7-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  color: white;
+}
+.mag7-wrap h2 {
+  color: #7a4ec6;
+  margin-bottom: 1.5rem;
+}
+.mag7-msg {
+  color: #888;
+  padding: 40px;
+  text-align: center;
+}
+
+.mag7-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px 90px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #2a2e35;
+  border: 1px solid #3a3e45;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.mag7-row.spy {
+  border-color: #7a4ec6;
+  background: rgba(122, 78, 198, 0.1);
+}
+.mag7-row.avg {
+  border-style: dashed;
+}
+
+.mag7-ticker {
+  font-weight: 700;
+  font-size: 13px;
+  color: #b39ddb;
+}
+.mag7-row.spy .mag7-ticker {
+  color: #7a4ec6;
+}
+
+.mag7-bar-bg {
+  height: 10px;
+  background: #1a1e25;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.mag7-bar {
+  height: 100%;
+  border-radius: 5px;
+  min-width: 3px;
+  transition: width 0.5s ease;
+}
+.mag7-bar.up {
+  background: #00aa76;
+}
+.mag7-bar.down {
+  background: #ff4444;
+}
+.mag7-bar.beats {
+  background: #44cc99;
+}
+
+.mag7-pct {
+  font-weight: 700;
+  font-size: 14px;
+  text-align: right;
+}
+.mag7-price {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+.mag7-note {
+  margin-top: 1rem;
+  font-size: 11px;
+  color: #555;
+  text-align: center;
+}
+
+.up {
+  color: #00aa76;
+}
+.down {
+  color: #ff4444;
+}
