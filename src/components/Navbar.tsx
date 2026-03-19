@@ -13,14 +13,15 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
     onLogout?.();
     navigate("/login");
   };
+
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <h1>Finz</h1>
+      <div className="navbar-page-title">Dashboard</div>
+      <div className="navbar-right">
+        <button className="btn-logout" onClick={handleLogout}>
+          Salir
+        </button>
       </div>
-      <button className="btn-logout" onClick={handleLogout}>
-        Salir
-      </button>
     </nav>
   );
 };

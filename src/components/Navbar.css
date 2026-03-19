@@ -2,27 +2,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background: #2a2e35;
-  border-bottom: 1px solid #3a3e45;
+  padding: 0 24px;
+  height: 56px;
+  background: rgba(13, 15, 20, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 30;
 }
 
-.navbar-brand h1 {
-  margin: 0;
-  color: #7a4ec6;
-  font-size: 24px;
+.navbar-page-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .btn-logout {
-  padding: 10px 20px;
-  background: #2a2e35;
-  color: white;
-  border: 1px solid #3a3e45;
+  padding: 6px 14px;
+  background: none;
+  color: #64748b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s;
 }
 
 .btn-logout:hover {
-  background: #3a3e45;
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
 }

@@ -4,6 +4,7 @@ import CrearAlerta from "../CrearAlerta";
 import "../Dashboard.css";
 import { initNotifications, notify } from "../../utils/notifications";
 import { TickerItem } from "../../components/TickerItem";
+import { Plus } from "lucide-react";
 
 interface AlertasPageProps {
   onDataChange?: () => void;
@@ -142,7 +143,13 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         onClick={() => setMostrarForm(!mostrarForm)}
         disabled={loading}
       >
-        {mostrarForm ? "Cancelar" : "+ Nueva Alerta"}
+        {mostrarForm ? (
+          "Cancelar"
+        ) : (
+          <>
+            <Plus size={16} strokeWidth={3} /> Nueva Alerta
+          </>
+        )}
       </button>
 
       {mostrarForm && (

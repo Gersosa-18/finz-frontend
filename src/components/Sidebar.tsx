@@ -1,4 +1,5 @@
 import React from "react";
+import { Bell, Calendar, BarChart2, FileText, PieChart } from "lucide-react";
 import "./Sidebar.css";
 
 interface SidebarProps {
@@ -6,25 +7,29 @@ interface SidebarProps {
   onNavigate: (page: string) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
-  const pages = [
-    { id: "alertas", label: "📊 Alertas" },
-    { id: "eventos", label: "📅 Eventos" },
-    { id: "rsi", label: "📈 RSI" },
-    { id: "weekly-report", label: "📈 Reporte Semanal" },
-    { id: "mag7", label: "🚀 Mag 7 vs SPY" },
-  ];
+const pages = [
+  { id: "alertas", label: "Alertas", icon: Bell },
+  { id: "eventos", label: "Eventos", icon: Calendar },
+  { id: "rsi", label: "📈 RSI", icon: BarChart2 },
+  { id: "weekly-report", label: "Reporte Semanal", icon: FileText },
+  { id: "mag7", label: "Mag 7 vs SPY", icon: PieChart },
+];
 
+const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
   return (
     <aside className="sidebar">
+      <div className="sidebar-brand">
+        <h1>Finz</h1>
+      </div>
       <nav className="sidebar-nav">
-        {pages.map((page) => (
+        {pages.map(({ id, label, icon: Icon }) => (
           <button
-            key={page.id}
-            className={`nav-item ${currentPage === page.id ? "active" : ""}`}
-            onClick={() => onNavigate(page.id)}
+            key={id}
+            className={`nav-item ${currentPage === id ? "active" : ""}`}
+            onClick={() => onNavigate(id)}
           >
-            {page.label}
+            <Icon size={18} />
+            <span>{label}</span>
           </button>
         ))}
       </nav>
