@@ -3,6 +3,7 @@ import { AlertasActivadasResponse } from "../types/alertas";
 import { EventosResponse } from "../types/eventos";
 import { MisRSIResponse } from "../types/rsi";
 import { ReporteResponse } from "../types/reportes";
+import { AnalisisResponse } from "../types/analisis";
 
 const API_URL = (
   process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
@@ -107,4 +108,23 @@ export default api;
 export const reporteAPI = {
   getSemanalActual: () =>
     api.get<ReporteResponse[]>("/reportes/semanal-actual"),
+};
+
+// Analisis API
+export const analisisAPI = {
+  analizar: (
+    ticker: string,
+    timeframe: string,
+    imagen: File,
+    observacion: string,
+  ) => {
+    const form = new FormData();
+    form.append("ticker", ticker);
+    form.append("timeframe", timeframe);
+    form.append("imagen", imagen);
+    form.append("observacion", observacion);
+    return api.post<AnalisisResponse>("/analisis/chart", form, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
 };

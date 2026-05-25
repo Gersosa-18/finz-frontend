@@ -1,5 +1,12 @@
 import React from "react";
-import { Bell, Calendar, BarChart2, FileText, PieChart } from "lucide-react";
+import {
+  Bell,
+  Calendar,
+  BarChart2,
+  FileText,
+  PieChart,
+  Brain,
+} from "lucide-react";
 import "./Sidebar.css";
 
 interface SidebarProps {
@@ -10,9 +17,10 @@ interface SidebarProps {
 const pages = [
   { id: "alertas", label: "Alertas", icon: Bell },
   { id: "eventos", label: "Eventos", icon: Calendar },
-  { id: "rsi", label: "📈 RSI", icon: BarChart2 },
+  { id: "rsi", label: "RSI", icon: BarChart2 },
   { id: "weekly-report", label: "Reporte Semanal", icon: FileText },
   { id: "mag7", label: "Mag 7 vs SPY", icon: PieChart },
+  { id: "analisis", label: "Análisis IA", icon: Brain },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
