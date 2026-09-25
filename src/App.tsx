@@ -37,7 +37,7 @@ function App() {
             const res = await fetch(`${API_URL}/auth/heartbeat`, {
               headers: { Authorization: `Bearer ${token}` },
             });
-            if (res.status === 401) {
+            if (res.status === 401 || res.status === 403) {
               localStorage.clear();
               setIsAuth(false);
             }

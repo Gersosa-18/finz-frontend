@@ -18,15 +18,19 @@ export const TickerItem: React.FC<TickerItemProps> = React.memo(
       <>
         <span className="ticker-symbol">{ticker.symbol}</span>
         <span className={`ticker-price ${priceChange || ""}`}>
-          ${ticker.price}
+          {typeof ticker.price === "number"
+            ? `$${ticker.price.toFixed(2)}`
+            : ticker.price || "—"}
         </span>
         <span
           className={`ticker-change ${
-            ticker.change >= 0 ? "positive" : "negative"
+            (ticker.change ?? 0) >= 0 ? "positive" : "negative"
           }`}
         >
-          {ticker.change >= 0 ? "+" : ""}
-          {ticker.change}%
+          {(ticker.change ?? 0) >= 0 ? "+" : ""}
+          {typeof ticker.change === "number"
+            ? ticker.change.toFixed(2)
+            : ticker.change ?? 0}%
         </span>
       </>
     );

@@ -102,12 +102,20 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   const [tickerData, setTickerData] = useState<
     Record<string, { price: number; change: number }>
   >({});
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>(
+    typeof window !== "undefined" && "Notification" in window
+      ? Notification.permission
+      : "denied"
+  );
 
   const alertasPrevias = useRef<Set<string>>(new Set());
+  const isInitialLoad = useRef(true);
 
   const cargarAlertas = useCallback(async () => {
     try {
-      setLoading(true);
+      if (isInitialLoad.current) {
+        setLoading(true);
+      }
       // Carga concurrente con sincronización protegida en api.ts
       const [resAlertas, resTickets] = await Promise.all([
         alertasAPI.getMisAlertas(),
@@ -120,7 +128,10 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         tickerMap[t.symbol] = { price: t.price, change: t.change };
       });
       setTickerData(tickerMap);
-      setLoading(false);
+      if (isInitialLoad.current) {
+        isInitialLoad.current = false;
+        setLoading(false);
+      }
 
       // Evaluar alertas activadas en segundo plano
       const resActivadas = await alertasAPI.getActivadas();
@@ -136,6 +147,7 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
     } catch (err: unknown) {
       console.error("Error cargando alertas:", getApiErrorMessage(err));
       setLoading(false);
+      isInitialLoad.current = false;
     }
   }, [onDataChange]);
 
@@ -216,16 +228,19 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
         </div>
       )}
 
-      {typeof window !== "undefined" && "Notification" in window && Notification.permission === "default" && (
+      {typeof window !== "undefined" && "Notification" in window && notifPermission === "default" && (
         <button
           className="btn-notificaciones"
           onClick={async () => {
             await initNotifications();
+            if ("Notification" in window) {
+              setNotifPermission(Notification.permission);
+            }
           }}
         >
           🔔 Habilitar Notificaciones de Precios
         </button>
-    )}
+      )}
 
       <button
         className="btn-nueva-alerta"

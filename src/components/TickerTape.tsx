@@ -41,7 +41,12 @@ const TickerTape: React.FC = () => {
             const prev = prevData.current.find(
               (t) => t.symbol === ticker.symbol
             );
-            if (prev && prev.price !== ticker.price) {
+            if (
+              prev &&
+              prev.price != null &&
+              ticker.price != null &&
+              prev.price !== ticker.price
+            ) {
               changes[ticker.symbol] =
                 ticker.price > prev.price ? "up" : "down";
             }

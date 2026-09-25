@@ -19,7 +19,10 @@ export const useAuthRefresh = () => {
           localStorage.setItem("refreshToken", res.data.refresh_token);
         }
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 401) {
+        if (
+          axios.isAxiosError(error) &&
+          (error.response?.status === 401 || error.response?.status === 403)
+        ) {
           localStorage.clear();
           if (window.location.pathname !== "/login") {
             window.location.href = "/login";
