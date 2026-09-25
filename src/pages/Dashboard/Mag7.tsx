@@ -3,20 +3,33 @@ import api from "../../services/api";
 import "./Mag7.css";
 import { Mag7Entry, Mag7Response } from "../../types/mag7";
 
-const Mag7 = () => {
+const Mag7: React.FC = () => {
   const [data, setData] = useState<Mag7Entry[]>([]);
   const [year, setYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isCurrent = true;
+
     api
       .get<Mag7Response>("/mercado/ytd")
       .then((res) => {
+        if (!isCurrent) return;
         setData(res.data.data ?? []);
         setYear(res.data.year ?? new Date().getFullYear());
       })
-      .finally(() => setLoading(false));
+      .catch(() => {
+        // Ignored or logged silently
+      })
+      .finally(() => {
+        if (isCurrent) setLoading(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
   }, []);
+
   if (loading) return <p className="mag7-msg">Cargando...</p>;
   if (!data.length)
     return (
@@ -25,6 +38,7 @@ const Mag7 = () => {
 
   const spy = data.find((d) => d.ticker === "SPY");
   const maxAbs = Math.max(...data.map((d) => Math.abs(d.ytd)), 1);
+
   return (
     <section className="mag7-wrap">
       <h2>📊 Mag 7 vs S&P 500 — YTD {year}</h2>
@@ -46,7 +60,9 @@ const Mag7 = () => {
             </span>
             <div className="mag7-bar-bg">
               <div
-                className={`mag7-bar ${positive ? "up" : "down"} ${beatsSpy && !isSpy ? "beats" : ""}`}
+                className={`mag7-bar ${positive ? "up" : "down"} ${
+                  beatsSpy && !isSpy ? "beats" : ""
+                }`}
                 style={{ width: `${barPct}%` }}
               />
             </div>

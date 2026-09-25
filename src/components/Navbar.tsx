@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
@@ -6,13 +6,13 @@ interface NavbarProps {
   onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
+const Navbar: React.FC<NavbarProps> = React.memo(({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     onLogout?.();
     navigate("/login");
-  };
+  }, [navigate, onLogout]);
 
   return (
     <nav className="navbar">
@@ -24,6 +24,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
       </div>
     </nav>
   );
-};
+});
+
+Navbar.displayName = "Navbar";
 
 export default Navbar;

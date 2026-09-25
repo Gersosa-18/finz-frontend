@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { rsiAPI } from "../../services/api";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { rsiAPI, getApiErrorMessage } from "../../services/api";
 import "./RSI.css";
 import { RSIData } from "../../types/rsi";
-const RSI = () => {
+
+const RSI: React.FC = () => {
   const [tickers, setTickers] = useState<RSIData[]>([]);
   const [nuevoTicker, setNuevoTicker] = useState("");
   const [loading, setLoading] = useState(false);
-  const [orden, setOrden] = useState("AZ");
+  const [orden, setOrden] = useState<"AZ" | "RSI">("AZ");
 
-  useEffect(() => {
-    cargar();
-    const int = setInterval(cargar, 60000);
-    return () => clearInterval(int);
-  }, []);
-
-  const cargar = async () => {
+  const cargar = useCallback(async () => {
     try {
       const res = await rsiAPI.getMisRSI();
       setTickers(res.data.tickers);
-    } catch (err) {
-      console.error("Error cargando RSI:", err);
+    } catch (err: unknown) {
+      console.error("Error cargando RSI:", getApiErrorMessage(err));
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    cargar();
+    const interval = setInterval(cargar, 60000);
+    return () => clearInterval(interval);
+  }, [cargar]);
 
   const agregar = async () => {
     const ticker = nuevoTicker.trim().toUpperCase();
@@ -31,9 +32,9 @@ const RSI = () => {
     try {
       await rsiAPI.agregar(ticker);
       setNuevoTicker("");
-      cargar();
-    } catch (err: any) {
-      alert(err.response?.data?.detail || "Error al agregar ticker");
+      await cargar();
+    } catch (err: unknown) {
+      alert(getApiErrorMessage(err, "Error al agregar ticker"));
     } finally {
       setLoading(false);
     }
@@ -43,9 +44,9 @@ const RSI = () => {
     if (!window.confirm(`¿Eliminar ${ticker}?`)) return;
     try {
       await rsiAPI.eliminar(ticker);
-      cargar();
-    } catch (err) {
-      alert("Error al eliminar");
+      await cargar();
+    } catch (err: unknown) {
+      alert(getApiErrorMessage(err, "Error al eliminar"));
     }
   };
 
@@ -58,11 +59,14 @@ const RSI = () => {
     return "neutral";
   };
 
-  const lista = [...tickers].sort((a, b) =>
-    orden === "AZ"
-      ? a.ticker.localeCompare(b.ticker)
-      : (a.rsi_value ?? 999) - (b.rsi_value ?? 999)
-  );
+  const lista = useMemo(() => {
+    return [...tickers].sort((a, b) =>
+      orden === "AZ"
+        ? a.ticker.localeCompare(b.ticker)
+        : (a.rsi_value ?? 999) - (b.rsi_value ?? 999)
+    );
+  }, [tickers, orden]);
+
   return (
     <section className="rsi-container">
       <h2>📈 RSI Monitor</h2>
@@ -86,7 +90,7 @@ const RSI = () => {
           <select
             className="rsi-orden"
             value={orden}
-            onChange={(e) => setOrden(e.target.value)}
+            onChange={(e) => setOrden(e.target.value as "AZ" | "RSI")}
           >
             <option value="AZ">A → Z</option>
             <option value="RSI">RSI</option>

@@ -23,7 +23,7 @@ const pages = [
   { id: "analisis", label: "Análisis IA", icon: Brain },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ currentPage, onNavigate }) => {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -43,6 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
       </nav>
     </aside>
   );
-};
+});
+
+Sidebar.displayName = "Sidebar";
 
 export default Sidebar;

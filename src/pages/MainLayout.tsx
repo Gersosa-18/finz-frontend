@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -16,22 +16,34 @@ interface MainLayoutProps {
   onLogout: () => void;
 }
 
+export type DashboardPage =
+  | "alertas"
+  | "eventos"
+  | "rsi"
+  | "weekly-report"
+  | "mag7"
+  | "analisis";
+
 const MainLayout: React.FC<MainLayoutProps> = ({ onLogout }) => {
-  const [currentPage, setCurrentPage] = useState("alertas");
+  const [currentPage, setCurrentPage] = useState<DashboardPage>("alertas");
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     authAPI.logout();
     onLogout();
     navigate("/login");
-  };
+  }, [navigate, onLogout]);
+
+  const handleNavigate = useCallback((page: string) => {
+    setCurrentPage(page as DashboardPage);
+  }, []);
 
   return (
     <div className="main-layout">
       <Navbar onLogout={handleLogout} />
       <TickerTape />
       <div className="layout-content">
-        <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+        <Sidebar currentPage={currentPage} onNavigate={handleNavigate} />
         <main className="page-content">
           {currentPage === "alertas" && <Alertas />}
           {currentPage === "eventos" && <Eventos />}

@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { analisisAPI } from "../../services/api";
+import React, { useState, useRef, useEffect } from "react";
+import { analisisAPI, getApiErrorMessage } from "../../services/api";
 import { AnalisisResponse } from "../../types/analisis";
 import "./Analisis.css";
 import ReactMarkDown from "react-markdown";
@@ -10,7 +10,7 @@ const VEREDICTO_EMOJI: Record<string, string> = {
   NO_ENTRAR: "🔴",
 };
 
-const Analisis = () => {
+const Analisis: React.FC = () => {
   const [ticker, setTicker] = useState("");
   const [timeframe, setTimeframe] = useState("semanal");
   const [imagen, setImagen] = useState<File | null>(null);
@@ -22,7 +22,21 @@ const Analisis = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [observacion, setObservacion] = useState("");
 
+  const previewRef = useRef<string | null>(null);
+  previewRef.current = preview;
+
+  useEffect(() => {
+    return () => {
+      if (previewRef.current) {
+        URL.revokeObjectURL(previewRef.current);
+      }
+    };
+  }, []);
+
   const handleFile = (file: File) => {
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
     setImagen(file);
     setPreview(URL.createObjectURL(file));
     setResultado(null);
@@ -49,12 +63,12 @@ const Analisis = () => {
         ticker.trim(),
         timeframe,
         imagen,
-        observacion,
+        observacion
       );
       setResultado(res.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(
-        err.response?.data?.detail || "Error al analizar. Intentá de nuevo.",
+        getApiErrorMessage(err, "Error al analizar. Intentá de nuevo.")
       );
     } finally {
       setLoading(false);
@@ -92,7 +106,9 @@ const Analisis = () => {
         </div>
 
         <div
-          className={`drop-zone ${dragOver ? "drag-over" : ""} ${imagen ? "has-file" : ""}`}
+          className={`drop-zone ${dragOver ? "drag-over" : ""} ${
+            imagen ? "has-file" : ""
+          }`}
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();

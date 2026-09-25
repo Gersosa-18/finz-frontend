@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authAPI } from "../services/api";
+import { authAPI, getApiErrorMessage } from "../services/api";
 import "./Login.css";
 
 interface LoginProps {
@@ -24,8 +24,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       // Notificar a App.tsx que el estado cambió
       onLoginSuccess();
       navigate("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.detail || "Error al iniciar sesión");
+    } catch (err: unknown) {
+      setError(getApiErrorMessage(err, "Error al iniciar sesión"));
     } finally {
       setLoading(false);
     }

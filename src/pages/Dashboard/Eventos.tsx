@@ -1,26 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { eventosAPI } from "../../services/api";
+import React, { useState, useEffect, useCallback } from "react";
+import { eventosAPI, getApiErrorMessage } from "../../services/api";
+import { EventosResponse } from "../../types/eventos";
 import "./Eventos.css";
 
-const Eventos = () => {
-  const [eventos, setEventos] = useState<any>({ macro: [], micro: [] });
+const Eventos: React.FC = () => {
+  const [eventos, setEventos] = useState<EventosResponse>({
+    macro: [],
+    micro: [],
+    tus_tickers: [],
+  });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    cargarEventos();
-  }, []);
-
-  const cargarEventos = async () => {
+  const cargarEventos = useCallback(async () => {
     try {
       setLoading(true);
       const res = await eventosAPI.getMisEventos();
       setEventos(res.data);
-    } catch (err) {
-      console.error("Error cargando eventos:", err);
+    } catch (err: unknown) {
+      console.error("Error cargando eventos:", getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    cargarEventos();
+  }, [cargarEventos]);
 
   return (
     <section className="eventos-page">
@@ -31,8 +36,8 @@ const Eventos = () => {
         {eventos.macro.length === 0 ? (
           <p className="empty-state">Sin eventos macro próximos</p>
         ) : (
-          eventos.macro.map((e: any) => (
-            <div key={e.fecha} className="evento-card">
+          eventos.macro.map((e, index) => (
+            <div key={`${e.fecha}-${e.descripcion}-${index}`} className="evento-card">
               <span>{e.descripcion}</span>
               <span className="fecha">{e.fecha}</span>
             </div>
@@ -45,8 +50,8 @@ const Eventos = () => {
         {eventos.micro.length === 0 ? (
           <p className="empty-state">Sin earnings próximos en tus tickers</p>
         ) : (
-          eventos.micro.map((e: any) => (
-            <div key={`${e.ticker}-${e.fecha}`} className="evento-card">
+          eventos.micro.map((e, index) => (
+            <div key={`${e.ticker}-${e.fecha}-${index}`} className="evento-card">
               <span className="ticker">{e.ticker}</span>
               <span>{e.descripcion}</span>
               <span className="fecha">{e.fecha}</span>

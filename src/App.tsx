@@ -1,12 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import MainLayout from "./pages/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuthRefresh } from "./hooks/useAuthRefresh";
-
-const API_URL = (
-  process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
-).replace(/\/$/, "");
+import { API_URL } from "./services/api";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -14,35 +11,39 @@ function App() {
 
   useAuthRefresh();
 
-  // Verificar auth inicial
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = () => {
+  const checkAuth = useCallback(() => {
     const token = localStorage.getItem("token");
     const refreshToken = localStorage.getItem("refreshToken");
     setIsAuth(!!(token && refreshToken));
     setLoading(false);
-  };
+  }, []);
+
+  // Verificar auth inicial
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   // Función para actualizar estado de auth
-  const handleAuthChange = () => {
+  const handleAuthChange = useCallback(() => {
     checkAuth();
-  };
+  }, [checkAuth]);
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
+    const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
         const token = localStorage.getItem("token");
         if (token) {
-          // Validar token al volver a la tab
-          fetch(`${API_URL}/auth/heartbeat`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }).catch(() => {
-            console.log("Sesión expirada");
-            setIsAuth(false);
-          });
+          try {
+            const res = await fetch(`${API_URL}/auth/heartbeat`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (res.status === 401) {
+              localStorage.clear();
+              setIsAuth(false);
+            }
+          } catch {
+            // Error de red temporal, no desloguear inmediatamente al usuario
+          }
         }
       }
     };

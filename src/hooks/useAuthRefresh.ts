@@ -1,38 +1,44 @@
 import { useEffect } from "react";
 import axios from "axios";
-
-const API_URL = (
-  process.env.REACT_APP_API_URL || "http://127.0.0.1:8000"
-).replace(/\/$/, "");
+import { API_URL } from "../services/api";
+import { RefreshResponse } from "../types/auth";
 
 export const useAuthRefresh = () => {
   useEffect(() => {
-    const refresh = localStorage.getItem("refreshToken");
-    if (!refresh) return;
-
-    // Renovar token cada 25 min
+    // Renovar token periódicamente antes de expiración
     const refreshToken = async () => {
+      const refresh = localStorage.getItem("refreshToken");
+      if (!refresh) return;
+
       try {
-        const res = await axios.post(`${API_URL}/auth/refresh`, {
+        const res = await axios.post<RefreshResponse>(`${API_URL}/auth/refresh`, {
           refresh_token: refresh,
         });
         localStorage.setItem("token", res.data.access_token);
-        console.log("Token renovado");
+        if (res.data.refresh_token) {
+          localStorage.setItem("refreshToken", res.data.refresh_token);
+        }
       } catch (error) {
-        localStorage.clear();
-        window.location.href = "/login";
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          localStorage.clear();
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
+        }
       }
     };
 
     // Heartbeat
     const heartbeat = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
       try {
-        const token = localStorage.getItem("token");
         await axios.get(`${API_URL}/auth/heartbeat`, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } catch (error) {
-        console.log("Sesión inválida");
+        // Sesión inválida o error temporal
       }
     };
 

@@ -1,73 +1,69 @@
 import React, { useState } from "react";
-import { alertasAPI } from "../services/api";
+import { alertasAPI, getApiErrorMessage } from "../services/api";
+import { TipoAlerta } from "../types/alertas";
 
 interface CrearAlertaProps {
   onAlertaCreada: () => void;
   onCancelar: () => void;
 }
 
+interface FormState {
+  ticker: string;
+  valor: string;
+  condicion: "mayor_que" | "menor_que";
+  valor_minimo: string;
+  valor_maximo: string;
+  porcentaje_cambio: string;
+}
+
 const CrearAlerta: React.FC<CrearAlertaProps> = ({
   onAlertaCreada,
   onCancelar,
 }) => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     ticker: "",
-    // simple
     valor: "",
     condicion: "mayor_que",
-    // rango
     valor_minimo: "",
     valor_maximo: "",
-    // porcentaje
     porcentaje_cambio: "",
   });
-  const [tipoAlerta, setTipoAlerta] = useState("simple");
+  const [tipoAlerta, setTipoAlerta] = useState<TipoAlerta>("simple");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    if (tipoAlerta === "simple") {
-      try {
+
+    try {
+      const tickerUpper = form.ticker.trim().toUpperCase();
+
+      if (tipoAlerta === "simple") {
         await alertasAPI.crearSimple({
-          ticker: form.ticker.toUpperCase(),
+          ticker: tickerUpper,
           campo: "precio",
           tipo_condicion: form.condicion,
           valor: parseFloat(form.valor),
         });
-        onAlertaCreada();
-      } catch (err: any) {
-        alert(err.response?.data?.detail || "Error al crear alerta");
-      } finally {
-        setLoading(false);
-      }
-    } else if (tipoAlerta === "rango") {
-      try {
+      } else if (tipoAlerta === "rango") {
         await alertasAPI.crearRango({
-          ticker: form.ticker.toUpperCase(),
+          ticker: tickerUpper,
           campo: "precio",
           valor_minimo: parseFloat(form.valor_minimo),
           valor_maximo: parseFloat(form.valor_maximo),
         });
-        onAlertaCreada();
-      } catch (err: any) {
-        alert(err.response?.data?.detail || "Error al crear alerta");
-      } finally {
-        setLoading(false);
-      }
-    } else if (tipoAlerta === "porcentaje") {
-      try {
+      } else if (tipoAlerta === "porcentaje") {
         await alertasAPI.crearPorcentaje({
-          ticker: form.ticker.toUpperCase(),
+          ticker: tickerUpper,
           campo: "precio",
           porcentaje_cambio: parseFloat(form.porcentaje_cambio),
         });
-        onAlertaCreada();
-      } catch (err: any) {
-        alert(err.response?.data?.detail || "Error al crear alerta");
-      } finally {
-        setLoading(false);
       }
+      onAlertaCreada();
+    } catch (err: unknown) {
+      alert(getApiErrorMessage(err, "Error al crear alerta"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,13 +73,14 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
         name="tipoAlerta"
         id="tipoAlerta"
         value={tipoAlerta}
-        onChange={(e) => setTipoAlerta(e.target.value)}
+        onChange={(e) => setTipoAlerta(e.target.value as TipoAlerta)}
         disabled={loading}
       >
         <option value="simple">Simple</option>
         <option value="rango">Rango</option>
         <option value="porcentaje">Porcentaje</option>
       </select>
+
       <input
         placeholder="Ticker (ej: AAPL, TSLA, NVDA...)"
         value={form.ticker}
@@ -97,16 +94,23 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
         }}
         disabled={loading}
       />
+
       {tipoAlerta === "simple" && (
         <select
           value={form.condicion}
-          onChange={(e) => setForm({ ...form, condicion: e.target.value })}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              condicion: e.target.value as "mayor_que" | "menor_que",
+            })
+          }
           disabled={loading}
         >
           <option value="mayor_que">Mayor que (&gt;)</option>
           <option value="menor_que">Menor que (&lt;)</option>
         </select>
       )}
+
       {tipoAlerta === "simple" && (
         <input
           placeholder="Precio"
@@ -130,6 +134,7 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
           disabled={loading}
         />
       )}
+
       {tipoAlerta === "rango" && (
         <input
           placeholder="Precio máximo"
@@ -141,6 +146,7 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
           disabled={loading}
         />
       )}
+
       {tipoAlerta === "porcentaje" && (
         <input
           placeholder="Porcentaje de cambio (ej: 5 para ±5%)"
