@@ -58,17 +58,19 @@ api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
-
     if (!originalRequest) {
       return Promise.reject(error);
     }
-
     const isAuthEndpoint =
       originalRequest.url?.includes("/auth/refresh") ||
       originalRequest.url?.includes("/login");
-
-    // Solo renovar token ante 401 Unauthorized en endpoints no-auth
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    // Detectar 401 Unauthorized o 403 con mensaje de token
+    const isUnauthorized = error.response?.status === 401;
+    const isLegacyTokenForbidden =
+      error.response?.status === 403 &&
+      typeof (error.response?.data as { error?: string })?.error === "string" &&
+      (error.response?.data as { error: string }).error.toLowerCase().includes("token");
+    if ((isUnauthorized || isLegacyTokenForbidden) && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -79,10 +81,8 @@ api.interceptors.response.use(
           })
           .catch((queueErr) => Promise.reject(queueErr));
       }
-
       originalRequest._retry = true;
       isRefreshing = true;
-
       const refresh = localStorage.getItem("refreshToken");
       if (!refresh) {
         authAPI.logout();
@@ -91,22 +91,17 @@ api.interceptors.response.use(
         }
         return Promise.reject(error);
       }
-
       try {
-        // Usar instancia directa sin interceptores para evitar recursión
         const res = await axios.post<RefreshResponse>(`${API_URL}/auth/refresh`, {
           refresh_token: refresh,
         });
-
         const newToken = res.data.access_token;
         localStorage.setItem("token", newToken);
         if (res.data.refresh_token) {
           localStorage.setItem("refreshToken", res.data.refresh_token);
         }
-
         api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
         processQueue(null, newToken);
         return api(originalRequest);
       } catch (refreshError: unknown) {
@@ -120,7 +115,6 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
-
     return Promise.reject(error);
   }
 );
@@ -131,8 +125,16 @@ export const getApiErrorMessage = (
   fallback = "Ocurrió un error inesperado"
 ): string => {
   if (axios.isAxiosError(error)) {
-    const data = error.response?.data as { detail?: string; message?: string } | undefined;
-    return data?.detail || data?.message || error.message || fallback;
+    const data = error.response?.data as
+      | { detail?: string; message?: string; error?: string }
+      | undefined;
+    return (
+      data?.error ||
+      data?.detail ||
+      data?.message ||
+      error.message ||
+      fallback
+    );
   }
   if (error instanceof Error) {
     return error.message;

@@ -140,11 +140,15 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
   }, [onDataChange]);
 
   useEffect(() => {
+  // Solo sincronizar push automáticamente si el usuario YA otorgó permiso previamente
+  if ("Notification" in window && Notification.permission === "granted") {
     initNotifications();
-    cargarAlertas();
-    const interval = setInterval(cargarAlertas, 30000);
-    return () => clearInterval(interval);
-  }, [cargarAlertas]);
+  }
+  
+  cargarAlertas();
+  const interval = setInterval(cargarAlertas, 30000);
+  return () => clearInterval(interval);
+}, [cargarAlertas]);
 
   const eliminarAlerta = useCallback(
     async (id: number) => {
@@ -211,6 +215,17 @@ const Alertas: React.FC<AlertasPageProps> = ({ onDataChange }) => {
           ))}
         </div>
       )}
+
+      {typeof window !== "undefined" && "Notification" in window && Notification.permission === "default" && (
+        <button
+          className="btn-notificaciones"
+          onClick={async () => {
+            await initNotifications();
+          }}
+        >
+          🔔 Habilitar Notificaciones de Precios
+        </button>
+    )}
 
       <button
         className="btn-nueva-alerta"
