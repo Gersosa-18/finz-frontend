@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import api from "../../services/api";
+import CrearAlerta from "../CrearAlerta";
 import "./Mag7.css";
 import { Mag7Entry, Mag7Response } from "../../types/mag7";
+
+const FILTROS = ["Todo", "Mag 7", "Índices", "Sectores", "Mis Seguidos"];
 
 const Mag7: React.FC = () => {
   const [data, setData] = useState<Mag7Entry[]>([]);
   const [year, setYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState("Mag 7");
+  const [alertaModal, setAlertaModal] = useState<{
+    ticker: string;
+    price?: number;
+  } | null>(null);
 
   useEffect(() => {
     let isCurrent = true;
@@ -30,7 +38,7 @@ const Mag7: React.FC = () => {
     };
   }, []);
 
-  if (loading) return <p className="mag7-msg">Cargando...</p>;
+  if (loading) return <p className="mag7-msg">Cargando Pulso de Mercado...</p>;
   if (!data.length) {
     return (
       <p className="mag7-msg">Sin datos - actualiza al cierre del mercado.</p>
@@ -43,8 +51,21 @@ const Mag7: React.FC = () => {
   return (
     <section className="mag7-wrap">
       <div className="mag7-header">
-        <h2>Pulso de Mercado — YTD {year}</h2>
-        <span className="mag7-badge">Mag 7 vs SPY</span>
+        <h2>Pulso de Mercado</h2>
+        <span className="mag7-badge">YTD {year}</span>
+      </div>
+
+      {/* Chips de Categorías */}
+      <div className="mag7-chips">
+        {FILTROS.map((f) => (
+          <button
+            key={f}
+            className={`mag7-chip ${filtro === f ? "active" : ""}`}
+            onClick={() => setFiltro(f)}
+          >
+            {f}
+          </button>
+        ))}
       </div>
 
       <div className="mag7-list">
@@ -61,7 +82,7 @@ const Mag7: React.FC = () => {
               className={`mag7-card ${isSpy ? "spy" : ""} ${isAvg ? "avg" : ""}`}
             >
               <div className="mag7-card-left">
-                <span className="mag7-rank">#{idx + 1}</span>
+                <span className="mag7-rank">{idx + 1}.</span>
                 <div className="mag7-info">
                   <span className="mag7-ticker">
                     {isAvg ? "Promedio Mag 7" : entry.ticker}
@@ -87,6 +108,20 @@ const Mag7: React.FC = () => {
                 {positive ? "+" : ""}
                 {entry.ytd.toFixed(2)}%
               </span>
+
+              {!isAvg && (
+                <button
+                  className="btn-card-alerta"
+                  onClick={() =>
+                    setAlertaModal({
+                      ticker: entry.ticker,
+                      price: entry.price ?? undefined,
+                    })
+                  }
+                >
+                  + Alerta
+                </button>
+              )}
             </div>
           );
         })}
@@ -95,6 +130,16 @@ const Mag7: React.FC = () => {
       <p className="mag7-note">
         MAG7 avg = promedio simple · Rendimiento comparado contra S&P 500 (SPY)
       </p>
+
+      {/* Modal Bottom Sheet Nueva Alerta */}
+      {alertaModal && (
+        <CrearAlerta
+          initialTicker={alertaModal.ticker}
+          initialPrice={alertaModal.price}
+          onAlertaCreada={() => setAlertaModal(null)}
+          onCancelar={() => setAlertaModal(null)}
+        />
+      )}
     </section>
   );
 };

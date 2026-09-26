@@ -1,0 +1,300 @@
+/* finz-frontend/src/pages/CrearAlerta.css */
+
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 999;
+}
+
+.sheet-dialog {
+  background: #11141c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 520px;
+  padding: 16px 20px 32px;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
+  animation: sheet-slide-up 0.22s ease-out;
+  color: #ffffff;
+}
+
+@keyframes sheet-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sheet-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.sheet-sub {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.sheet-close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sheet-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Segmented Tabs */
+.sheet-tabs {
+  display: flex;
+  background: #181d28;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+
+.sheet-tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sheet-tab.active {
+  background: #8b5cf6;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.4);
+}
+
+/* Ticker input */
+.sheet-input-row {
+  margin-bottom: 14px;
+}
+
+.sheet-input-label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.sheet-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #181d28;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.sheet-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+}
+
+/* Stepper y precio central */
+.sheet-stepper-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0 20px;
+  gap: 12px;
+}
+
+.step-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 52px;
+  background: #1c2230;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #f1f5f9;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.step-btn span.step-sub {
+  font-size: 9px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.step-btn:hover {
+  background: #232b3c;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sheet-price-center {
+  flex: 1;
+  text-align: center;
+}
+
+.sheet-big-price-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.sheet-big-price-input:focus {
+  outline: none;
+}
+
+/* Toggles / Extras */
+.sheet-row-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13.5px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.sheet-subtag {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.switch-pill {
+  width: 44px;
+  height: 24px;
+  background: #2a3344;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.switch-pill.on {
+  background: #00c08b;
+}
+
+.switch-circle {
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s ease;
+}
+
+.switch-pill.on .switch-circle {
+  transform: translateX(20px);
+}
+
+/* Botón Activar Alerta */
+.btn-activar-cta {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 20px;
+  background: #00c08b;
+  border: none;
+  border-radius: 14px;
+  color: #08121a;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 16px rgba(0, 192, 139, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-activar-cta:hover {
+  background: #00d69b;
+  transform: translateY(-1px);
+}
+
+.btn-activar-cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* En Desktop centrar el diálogo */
+@media (min-width: 640px) {
+  .sheet-overlay {
+    align-items: center;
+  }
+  .sheet-dialog {
+    border-radius: 20px;
+    animation: sheet-fade-scale 0.18s ease-out;
+  }
+  @keyframes sheet-fade-scale {
+    from {
+      transform: scale(0.96);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}

@@ -1,64 +1,69 @@
 import React, { useState } from "react";
 import { alertasAPI, getApiErrorMessage } from "../services/api";
 import { TipoAlerta } from "../types/alertas";
+import "./CrearAlerta.css";
 
 interface CrearAlertaProps {
   onAlertaCreada: () => void;
   onCancelar: () => void;
   initialTicker?: string;
-}
-
-interface FormState {
-  ticker: string;
-  valor: string;
-  condicion: "mayor_que" | "menor_que";
-  valor_minimo: string;
-  valor_maximo: string;
-  porcentaje_cambio: string;
+  initialPrice?: number;
 }
 
 const CrearAlerta: React.FC<CrearAlertaProps> = ({
   onAlertaCreada,
   onCancelar,
-  initialTicker,
+  initialTicker = "",
+  initialPrice,
 }) => {
-  const [form, setForm] = useState<FormState>({
-    ticker: initialTicker || "",
-    valor: "",
-    condicion: "mayor_que",
-    valor_minimo: "",
-    valor_maximo: "",
-    porcentaje_cambio: "",
-  });
+  const [ticker, setTicker] = useState(initialTicker);
   const [tipoAlerta, setTipoAlerta] = useState<TipoAlerta>("simple");
+  const [condicion, setCondicion] = useState<"mayor_que" | "menor_que">("mayor_que");
+  const [valor, setValor] = useState(
+    initialPrice ? (initialPrice * 1.05).toFixed(2) : "100.00"
+  );
+  const [valorMinimo, setValorMinimo] = useState(
+    initialPrice ? (initialPrice * 0.95).toFixed(2) : "90.00"
+  );
+  const [valorMaximo, setValorMaximo] = useState(
+    initialPrice ? (initialPrice * 1.05).toFixed(2) : "110.00"
+  );
+  const [porcentajeCambio, setPorcentajeCambio] = useState("5");
+  const [repetir, setRepetir] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const adjustValor = (percentDelta: number) => {
+    const current = parseFloat(valor) || (initialPrice ?? 100);
+    const next = current * (1 + percentDelta / 100);
+    setValor(next.toFixed(2));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const t = ticker.trim().toUpperCase();
+    if (!t) return;
     setLoading(true);
 
     try {
-      const tickerUpper = form.ticker.trim().toUpperCase();
-
       if (tipoAlerta === "simple") {
         await alertasAPI.crearSimple({
-          ticker: tickerUpper,
+          ticker: t,
           campo: "precio",
-          tipo_condicion: form.condicion,
-          valor: parseFloat(form.valor),
+          tipo_condicion: condicion,
+          valor: parseFloat(valor),
         });
       } else if (tipoAlerta === "rango") {
         await alertasAPI.crearRango({
-          ticker: tickerUpper,
+          ticker: t,
           campo: "precio",
-          valor_minimo: parseFloat(form.valor_minimo),
-          valor_maximo: parseFloat(form.valor_maximo),
+          valor_minimo: parseFloat(valorMinimo),
+          valor_maximo: parseFloat(valorMaximo),
         });
       } else if (tipoAlerta === "porcentaje") {
         await alertasAPI.crearPorcentaje({
-          ticker: tickerUpper,
+          ticker: t,
           campo: "precio",
-          porcentaje_cambio: parseFloat(form.porcentaje_cambio),
+          porcentaje_cambio: parseFloat(porcentajeCambio),
         });
       }
       onAlertaCreada();
@@ -70,109 +75,171 @@ const CrearAlerta: React.FC<CrearAlertaProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="crear-alerta-form">
-      <select
-        name="tipoAlerta"
-        id="tipoAlerta"
-        value={tipoAlerta}
-        onChange={(e) => setTipoAlerta(e.target.value as TipoAlerta)}
-        disabled={loading}
-      >
-        <option value="simple">Simple</option>
-        <option value="rango">Rango</option>
-        <option value="porcentaje">Porcentaje</option>
-      </select>
+    <div className="sheet-overlay" onClick={onCancelar}>
+      <div className="sheet-dialog" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle" />
 
-      <input
-        placeholder="Ticker (ej: AAPL, TSLA, NVDA...)"
-        value={form.ticker}
-        onChange={(e) => setForm({ ...form, ticker: e.target.value })}
-        required
-        minLength={1}
-        maxLength={10}
-        style={{
-          borderColor:
-            form.ticker && form.ticker.length > 10 ? "#c33" : undefined,
-        }}
-        disabled={loading}
-      />
+        <div className="sheet-header">
+          <div>
+            <h3 className="sheet-title">
+              {ticker ? `Nueva Alerta para ${ticker}` : "Nueva Alerta"}
+            </h3>
+            <span className="sheet-sub">Configuración de precio</span>
+          </div>
+          <button type="button" className="sheet-close-btn" onClick={onCancelar}>
+            ✕
+          </button>
+        </div>
 
-      {tipoAlerta === "simple" && (
-        <select
-          value={form.condicion}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              condicion: e.target.value as "mayor_que" | "menor_que",
-            })
-          }
-          disabled={loading}
-        >
-          <option value="mayor_que">Mayor que (&gt;)</option>
-          <option value="menor_que">Menor que (&lt;)</option>
-        </select>
-      )}
+        {/* Segmented Tabs: Simple / Rango / Porcentaje */}
+        <div className="sheet-tabs">
+          {(["simple", "rango", "porcentaje"] as TipoAlerta[]).map((tipo) => (
+            <button
+              key={tipo}
+              type="button"
+              className={`sheet-tab ${tipoAlerta === tipo ? "active" : ""}`}
+              onClick={() => setTipoAlerta(tipo)}
+            >
+              {tipo === "simple" && "Simple"}
+              {tipo === "rango" && "Rango"}
+              {tipo === "porcentaje" && "Porcentaje"}
+            </button>
+          ))}
+        </div>
 
-      {tipoAlerta === "simple" && (
-        <input
-          placeholder="Precio"
-          type="number"
-          step="0.01"
-          value={form.valor}
-          onChange={(e) => setForm({ ...form, valor: e.target.value })}
-          required
-          disabled={loading}
-        />
-      )}
+        <form onSubmit={handleSubmit}>
+          {!initialTicker && (
+            <div className="sheet-input-row">
+              <label className="sheet-input-label">Ticker</label>
+              <input
+                className="sheet-input"
+                placeholder="Ej: NVDA, AAPL, SPY..."
+                value={ticker}
+                onChange={(e) => setTicker(e.target.value.toUpperCase())}
+                required
+              />
+            </div>
+          )}
 
-      {tipoAlerta === "rango" && (
-        <input
-          placeholder="Precio mínimo"
-          type="number"
-          step="0.01"
-          value={form.valor_minimo}
-          onChange={(e) => setForm({ ...form, valor_minimo: e.target.value })}
-          required
-          disabled={loading}
-        />
-      )}
+          {tipoAlerta === "simple" && (
+            <>
+              <div className="sheet-input-row">
+                <label className="sheet-input-label">Disparar cuando el precio sea</label>
+                <select
+                  className="sheet-input"
+                  value={condicion}
+                  onChange={(e) => setCondicion(e.target.value as "mayor_que" | "menor_que")}
+                >
+                  <option value="mayor_que">Mayor que (&gt;)</option>
+                  <option value="menor_que">Menor que (&lt;)</option>
+                </select>
+              </div>
 
-      {tipoAlerta === "rango" && (
-        <input
-          placeholder="Precio máximo"
-          type="number"
-          step="0.01"
-          value={form.valor_maximo}
-          onChange={(e) => setForm({ ...form, valor_maximo: e.target.value })}
-          required
-          disabled={loading}
-        />
-      )}
+              {/* Stepper numérico idéntico a la imagen */}
+              <div className="sheet-stepper-wrap">
+                <button
+                  type="button"
+                  className="step-btn"
+                  onClick={() => adjustValor(-1)}
+                  title="-1%"
+                >
+                  -
+                  <span className="step-sub">-1%</span>
+                </button>
+                <div className="sheet-price-center">
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="sheet-big-price-input"
+                    value={valor}
+                    onChange={(e) => setValor(e.target.value)}
+                    required
+                  />
+                  {initialPrice && (
+                    <div className="sheet-sub">
+                      Actual: ${initialPrice.toFixed(2)} (
+                      {(((parseFloat(valor) - initialPrice) / initialPrice) * 100).toFixed(1)}
+                      %)
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="step-btn"
+                  onClick={() => adjustValor(1)}
+                  title="+1%"
+                >
+                  +
+                  <span className="step-sub">+1%</span>
+                </button>
+              </div>
+            </>
+          )}
 
-      {tipoAlerta === "porcentaje" && (
-        <input
-          placeholder="Porcentaje de cambio (ej: 5 para ±5%)"
-          type="number"
-          step="0.01"
-          value={form.porcentaje_cambio}
-          onChange={(e) =>
-            setForm({ ...form, porcentaje_cambio: e.target.value })
-          }
-          required
-          disabled={loading}
-        />
-      )}
+          {tipoAlerta === "rango" && (
+            <div className="sheet-input-row" style={{ display: "flex", gap: "10px" }}>
+              <div style={{ flex: 1 }}>
+                <label className="sheet-input-label">Precio Mínimo</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="sheet-input"
+                  value={valorMinimo}
+                  onChange={(e) => setValorMinimo(e.target.value)}
+                  required
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label className="sheet-input-label">Precio Máximo</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="sheet-input"
+                  value={valorMaximo}
+                  onChange={(e) => setValorMaximo(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+          )}
 
-      <div className="form-actions">
-        <button type="submit" disabled={loading}>
-          {loading ? "Creando..." : "Crear"}
-        </button>
-        <button type="button" onClick={onCancelar} disabled={loading}>
-          Cancelar
-        </button>
+          {tipoAlerta === "porcentaje" && (
+            <div className="sheet-input-row">
+              <label className="sheet-input-label">Porcentaje de cambio (±%)</label>
+              <input
+                type="number"
+                step="0.1"
+                className="sheet-input"
+                placeholder="Ej: 5 para ±5%"
+                value={porcentajeCambio}
+                onChange={(e) => setPorcentajeCambio(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
+          <div className="sheet-row-toggle">
+            <span>Repetir alerta</span>
+            <div
+              className={`switch-pill ${repetir ? "on" : ""}`}
+              onClick={() => setRepetir(!repetir)}
+            >
+              <div className="switch-circle" />
+            </div>
+          </div>
+
+          <div className="sheet-row-toggle">
+            <span>Notificarme</span>
+            <span className="sheet-subtag">Push notification</span>
+          </div>
+
+          <button type="submit" className="btn-activar-cta" disabled={loading}>
+            {loading ? "Guardando..." : "Activar Alerta 🔔"}
+          </button>
+        </form>
       </div>
-    </form>
+    </div>
   );
 };
 
-export default CrearAlerta;
+export default React.memo(CrearAlerta);
