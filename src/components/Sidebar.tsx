@@ -4,7 +4,7 @@ import {
   Calendar,
   BarChart2,
   FileText,
-  PieChart,
+  TrendingUp,
   Brain,
 } from "lucide-react";
 import "./Sidebar.css";
@@ -15,11 +15,11 @@ interface SidebarProps {
 }
 
 const pages = [
+  { id: "mag7", label: "Mercados", icon: TrendingUp },
+  { id: "rsi", label: "RSI", icon: BarChart2 },
   { id: "alertas", label: "Alertas", icon: Bell },
   { id: "eventos", label: "Eventos", icon: Calendar },
-  { id: "rsi", label: "RSI", icon: BarChart2 },
-  { id: "weekly-report", label: "Reporte Semanal", icon: FileText },
-  { id: "mag7", label: "Mag 7 vs SPY", icon: PieChart },
+  { id: "weekly-report", label: "Reporte", icon: FileText },
   { id: "analisis", label: "Análisis IA", icon: Brain },
 ];
 

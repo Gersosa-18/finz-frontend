@@ -1,42 +1,50 @@
 .ticker-symbol {
-  font-weight: bold;
-  color: #7a4ec6;
-  min-width: 50px;
+  font-weight: 800;
+  color: #ffffff;
+  min-width: 44px;
   text-align: left;
+  letter-spacing: 0.02em;
 }
 
 .ticker-price {
-  color: #fff;
-  min-width: 70px;
+  color: #f1f5f9;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
   text-align: right;
   transition: background-color 0.3s ease;
-  padding: 2px 6px;
-  border-radius: 3px;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 
 .ticker-price.up {
-  background-color: rgba(0, 170, 118, 0.3);
+  background-color: rgba(0, 192, 139, 0.25);
   animation: flash-up 1s ease;
 }
 
 .ticker-price.down {
-  background-color: rgba(255, 68, 68, 0.3);
+  background-color: rgba(239, 68, 68, 0.25);
   animation: flash-down 1s ease;
 }
 
 .ticker-change {
-  font-weight: bold;
-  font-size: 14px;
-  min-width: 60px;
+  font-weight: 700;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 7px;
+  border-radius: 6px;
   text-align: right;
+  letter-spacing: -0.01em;
 }
 
 .ticker-change.positive {
-  color: #00aa76;
+  color: #00c08b;
+  background: rgba(0, 192, 139, 0.14);
 }
 
 .ticker-change.negative {
-  color: #ff4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.14);
 }
 
 @keyframes flash-up {

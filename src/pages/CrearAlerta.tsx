@@ -5,6 +5,7 @@ import { TipoAlerta } from "../types/alertas";
 interface CrearAlertaProps {
   onAlertaCreada: () => void;
   onCancelar: () => void;
+  initialTicker?: string;
 }
 
 interface FormState {
@@ -19,9 +20,10 @@ interface FormState {
 const CrearAlerta: React.FC<CrearAlertaProps> = ({
   onAlertaCreada,
   onCancelar,
+  initialTicker,
 }) => {
   const [form, setForm] = useState<FormState>({
-    ticker: "",
+    ticker: initialTicker || "",
     valor: "",
     condicion: "mayor_que",
     valor_minimo: "",

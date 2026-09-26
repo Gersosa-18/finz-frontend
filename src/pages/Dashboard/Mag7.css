@@ -1,88 +1,158 @@
+/* finz-frontend/src/pages/Dashboard/Mag7.css */
+
 .mag7-wrap {
-  max-width: 700px;
+  max-width: 640px;
   margin: 0 auto;
-  color: white;
-}
-.mag7-wrap h2 {
-  color: #7a4ec6;
-  margin-bottom: 1.5rem;
-}
-.mag7-msg {
-  color: #888;
-  padding: 40px;
-  text-align: center;
+  color: #ffffff;
+  padding: 4px 6px 20px;
 }
 
-.mag7-row {
-  display: grid;
-  grid-template-columns: 80px 1fr 80px 90px;
+.mag7-header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.mag7-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.mag7-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #00c08b;
+  background: rgba(0, 192, 139, 0.12);
+  border: 1px solid rgba(0, 192, 139, 0.25);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.mag7-msg {
+  color: #64748b;
+  padding: 40px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.mag7-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mag7-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 10px 14px;
-  background: #2a2e35;
-  border: 1px solid #3a3e45;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  background: #141820;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: border-color 0.15s ease;
 }
-.mag7-row.spy {
-  border-color: #7a4ec6;
-  background: rgba(122, 78, 198, 0.1);
+
+.mag7-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
 }
-.mag7-row.avg {
+
+.mag7-card.spy {
+  border-color: rgba(122, 78, 198, 0.4);
+  background: rgba(122, 78, 198, 0.08);
+}
+
+.mag7-card.avg {
   border-style: dashed;
 }
 
-.mag7-ticker {
-  font-weight: 700;
-  font-size: 13px;
-  color: #b39ddb;
+.mag7-card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 130px;
 }
-.mag7-row.spy .mag7-ticker {
-  color: #7a4ec6;
+
+.mag7-rank {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  min-width: 22px;
+}
+
+.mag7-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mag7-ticker {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.mag7-price {
+  font-size: 12px;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
 }
 
 .mag7-bar-bg {
-  height: 10px;
-  background: #1a1e25;
-  border-radius: 5px;
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
   overflow: hidden;
 }
+
 .mag7-bar {
   height: 100%;
-  border-radius: 5px;
-  min-width: 3px;
-  transition: width 0.5s ease;
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
+
 .mag7-bar.up {
-  background: #00aa76;
+  background: #00c08b;
 }
+
 .mag7-bar.down {
-  background: #ff4444;
+  background: #ef4444;
 }
+
 .mag7-bar.beats {
-  background: #44cc99;
+  background: #10b981;
 }
 
 .mag7-pct {
+  font-size: 12.5px;
   font-weight: 700;
-  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 8px;
+  border-radius: 6px;
+  min-width: 68px;
   text-align: right;
+  letter-spacing: -0.01em;
 }
-.mag7-price {
-  font-size: 12px;
-  color: #666;
-  text-align: right;
+
+.mag7-pct.up {
+  color: #00c08b;
+  background: rgba(0, 192, 139, 0.12);
 }
+
+.mag7-pct.down {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
 .mag7-note {
-  margin-top: 1rem;
-  font-size: 11px;
-  color: #555;
+  margin-top: 14px;
+  font-size: 11.5px;
+  color: #64748b;
   text-align: center;
 }
 
-.up {
-  color: #00aa76;
-}
-.down {
-  color: #ff4444;
-}
