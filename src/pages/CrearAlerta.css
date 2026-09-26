@@ -3,13 +3,18 @@
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.78);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 999;
+}
+
+@media (min-width: 768px) {
+  .sheet-overlay {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
 }
 
 .sheet-dialog {
@@ -19,19 +24,19 @@
   width: 100%;
   max-width: 520px;
   padding: 16px 20px 32px;
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
-  animation: sheet-slide-up 0.22s ease-out;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  animation: sheet-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  transform: translateZ(0);
   color: #ffffff;
 }
 
 @keyframes sheet-slide-up {
   from {
     transform: translateY(100%);
-    opacity: 0.8;
   }
   to {
     transform: translateY(0);
-    opacity: 1;
   }
 }
 
@@ -75,7 +80,7 @@
   justify-content: center;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .sheet-close-btn:hover {
@@ -104,7 +109,7 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .sheet-tab.active {
@@ -166,7 +171,7 @@
   cursor: pointer;
   font-size: 18px;
   font-weight: 700;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .step-btn span.step-sub {
@@ -260,7 +265,7 @@
   font-size: 16px;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
   box-shadow: 0 4px 16px rgba(0, 192, 139, 0.35);
   display: flex;
   align-items: center;

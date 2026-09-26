@@ -52,7 +52,7 @@ const BentoCard: React.FC<BentoCardProps> = React.memo(
         <div
           className="bento-content"
           style={{
-            display: isHovered ? "flex" : "none",
+            display: isHovered ? "flex" : undefined,
           }}
         >
           {alertasList.map((a) => (
@@ -85,6 +85,21 @@ const BentoCard: React.FC<BentoCardProps> = React.memo(
         </div>
       </div>
     );
+  },
+  (prev, next) => {
+    if (prev.ticker !== next.ticker) return false;
+    if (prev.tickerInfo?.price !== next.tickerInfo?.price) return false;
+    if (prev.tickerInfo?.change !== next.tickerInfo?.change) return false;
+    if (prev.alertasList.length !== next.alertasList.length) return false;
+    for (let i = 0; i < prev.alertasList.length; i++) {
+      if (
+        prev.alertasList[i].id !== next.alertasList[i].id ||
+        prev.alertasList[i].activada_at !== next.alertasList[i].activada_at
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 );
 
